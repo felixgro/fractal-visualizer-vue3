@@ -1,0 +1,22 @@
+@import './reset';
+
+#app {
+	font-family: Avenir, Helvetica, Arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	padding: 20px;
+}
+
+canvas {
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+}
+
+label {
+	display: block;
+}
+
+small {
+	display: block;
+}

@@ -1,20 +1,17 @@
 <script lang="ts" setup>
+import * as Main from '@/components/main';
 import FractalRenderer from '@/components/main/FractalRenderer.vue';
 </script>
 
 <template>
-	<h1>Fractal Visualizer</h1>
-	<router-view />
+	<Main.Header />
+	<Main.Menu>
+		<router-view />
+	</Main.Menu>
+
 	<FractalRenderer />
 </template>
 
 <style>
-#app {
-	font-family: Avenir, Helvetica, Arial, sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	text-align: center;
-	color: #2c3e50;
-	margin-top: 60px;
-}
+@import '@/assets/styles/main.css';
 </style>

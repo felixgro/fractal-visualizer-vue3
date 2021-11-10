@@ -1,12 +1,3 @@
-<template>
-	<Form.Range
-		label="Angle"
-		v-model="config.angleDeg"
-		:max="360"
-		:step="1"
-	/>
-</template>
-
 <script lang="ts" setup>
 import * as Form from '@/components/form';
 import useFractal from '@/composables/useFractal';
@@ -17,14 +8,14 @@ const random = useRandom();
 
 const { draw, config } = useFractal(
 	{
-		angleDeg: 90,
+		angleDeg: 55,
 		angle: 0,
-		trunkRatio: 0.4,
-		step: 7,
+		trunkRatio: 0.5,
+		step: 10,
 		scale: 0.9,
 		random: true,
 		seed: 40,
-		angleRange: 0,
+		angleRange: 50,
 		lengthRange: 0,
 	},
 	{
@@ -90,3 +81,41 @@ draw((pen) => {
 	hFractal(pA, pB, config.step);
 });
 </script>
+
+<template>
+	<Form.Range label="Step" v-model="config.step" :max="10" />
+	<Form.Range
+		label="Scale"
+		v-model="config.scale"
+		:max="1"
+		:step="0.01"
+	/>
+	<Form.Range
+		label="Angle"
+		v-model="config.angleDeg"
+		:max="360"
+		:step="1"
+	/>
+	<Form.Range
+		label="Trunk Ratio"
+		v-model="config.trunkRatio"
+		:max="1"
+		:step="0.01"
+	/>
+	<Form.ExpandableCheckbox
+		label="Randomize"
+		v-model="config.random"
+	>
+		<Form.Number label="Seed" v-model="config.seed" />
+		<Form.Range
+			label="Angle Variation"
+			v-model="config.angleRange"
+			:max="360"
+		/>
+		<Form.Range
+			label="Length Variation"
+			v-model="config.lengthRange"
+			:max="100"
+		/>
+	</Form.ExpandableCheckbox>
+</template>
