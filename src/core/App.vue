@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import FractalRenderer from '@/core/FractalRenderer.vue';
+import FractalRenderer from '@/components/main/FractalRenderer.vue';
 </script>
 
 <template>

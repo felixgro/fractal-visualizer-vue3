@@ -5,7 +5,7 @@ import App from './core/App.vue';
 
 const app = createApp(App);
 
-app.use(router);
-app.use(emitter);
+app.use(router);     // loads all modules located in src/core/fractals dynamically as routes
+app.use(emitter);    // emit and listen for global events
 
 app.mount('#app');
