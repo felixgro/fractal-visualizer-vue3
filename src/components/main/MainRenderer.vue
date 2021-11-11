@@ -15,7 +15,7 @@ const resizeCanvas = (): void => {
 	canvas.value.height = window.innerHeight;
 
 	// redraw fractal to prevent distortion of current fractal state
-	emitter.emit('fractal.render');
+	emitter.emit('fractal:render');
 };
 
 onMounted(() => {

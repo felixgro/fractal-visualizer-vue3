@@ -17,7 +17,7 @@ watch(styles, (newStyles) => {
 	emitter.emit('fractal:render');
 });
 
-const emitSaveEvent = (e: Event) => {
+const emitSaveEvent = () => {
 	emitter.emit('fractal:save');
 };
 </script>

@@ -15,8 +15,8 @@ const { config } = useFractal<HFractal>({
 		angleVariation: 0,
 		lengthVariation: 0,
 	},
-	ignore: ['angle'],
 	drawHandler,
+	ignore: ['angle'],
 });
 </script>
 

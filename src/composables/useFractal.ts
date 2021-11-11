@@ -1,11 +1,13 @@
 import { ref, reactive, computed, onMounted } from 'vue';
+import ImageWorker from '@/core/ImageWorker?worker';
 import useEmitter from '@/composables/useEmitter';
 import useScopedWatch from '@/composables/useScopedWatch';
 import Pen from '@/libs/Pen';
+import { downloadImageBlob } from '@/helpers/file';
 
 type BaseObject = { [key: string]: any };
 
-type DrawHandler<ConfigType> = (pen: Pen, config: ConfigType) => void;
+type DrawHandler<ConfigType> = (pen: Pen, config: ConfigType, utils?: any) => void;
 
 export interface FractalOptions<ConfigType> {
     config: ConfigType,
@@ -23,7 +25,15 @@ export interface FractalReturn<ConfigType> {
     config: ConfigType
 }
 
-// defines draw handler for fractal in seperate file.
+export interface SaveImageMessage {
+    fractal: string,
+    state: BaseObject,
+    styles: FractalStyles,
+    dimensions: [number, number],
+    format: string;
+}
+
+// used for type hints when defining a draw handler in seperate file.
 export const defineFractal = <ConfigType>(handler: DrawHandler<ConfigType>) => handler;
 
 const useFractal = <FC extends BaseObject>(opts: FractalOptions<FC>): FractalReturn<FC> => {
@@ -41,7 +51,7 @@ const useFractal = <FC extends BaseObject>(opts: FractalOptions<FC>): FractalRet
     // store canvas element and it's rendering context
     const renderer = ref<HTMLCanvasElement>();
     const pen = computed<Pen | null>(() => {
-        return renderer.value ? new Pen(renderer.value) : null;
+        return renderer.value ? new Pen(renderer.value.getContext('2d')!) : null;
     });
 
     const renderFractal = () => {
@@ -63,7 +73,20 @@ const useFractal = <FC extends BaseObject>(opts: FractalOptions<FC>): FractalRet
         styles.lw = s.lw;
     }
 
-    const saveFractal = () => console.log('save');
+    const saveFractal = () => {
+        const worker = new ImageWorker();
+
+        worker.onmessage = (e: MessageEvent<Blob>) => downloadImageBlob(e.data, 'fractal.png');
+
+        const imageData: SaveImageMessage = {
+            fractal: 'HFractal',
+            styles: { ...styles },
+            state: { ...config },
+            dimensions: [5000, 5000],
+            format: 'png',
+        };
+        worker.postMessage(imageData);
+    };
 
     onMounted(() => {
         renderer.value = document.querySelector('.fractalRenderer') as HTMLCanvasElement;

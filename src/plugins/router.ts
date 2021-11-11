@@ -1,6 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { createRouter, createWebHistory } from "vue-router";
-import { getFileName } from '../utils/file';
+import { getFileName } from '@/helpers/file';
 
 // Lazy load all fractal control components located in core/controls/ to dynamically assign them
 // as routes to the router. This constant is going to be an object with the modules pathname
