@@ -28,6 +28,7 @@ const emitSaveEvent = (e: Event) => {
 		<Form.Color label="BG" v-model="styles.bg" />
 		<Form.Color label="FG" v-model="styles.fg" />
 		<Form.Number label="LW" v-model="styles.lw" />
-		<slot />
+
+		<RouterView />
 	</form>
 </template>

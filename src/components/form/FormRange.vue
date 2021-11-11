@@ -1,17 +1,3 @@
-<template>
-	<label :for="id('range')">{{ label }}</label>
-	<input
-		type="range"
-		:id="id('range')"
-		:min="min"
-		:max="max"
-		:step="step"
-		:value="modelValue"
-		@input="emitUpdateEvent"
-	/>
-	<small>{{ modelValue }}</small>
-</template>
-
 <script lang="ts" setup>
 import { defineProps, defineEmits } from 'vue';
 import useUID from '@/composables/useUid';
@@ -48,3 +34,17 @@ const emitUpdateEvent = (event: Event) => {
 	emits('update:modelValue', parseFloat(value));
 };
 </script>
+
+<template>
+	<label :for="id('range')">{{ label }}</label>
+	<input
+		type="range"
+		:id="id('range')"
+		:min="min"
+		:max="max"
+		:step="step"
+		:value="modelValue"
+		@input="emitUpdateEvent"
+	/>
+	<small>{{ modelValue }}</small>
+</template>

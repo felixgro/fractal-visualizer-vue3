@@ -1,7 +1,3 @@
-<template>
-	<button>{{ label }}</button>
-</template>
-
 <script lang="ts" setup>
 defineProps({
 	label: {
@@ -10,3 +6,7 @@ defineProps({
 	},
 });
 </script>
+
+<template>
+	<button>{{ label }}</button>
+</template>

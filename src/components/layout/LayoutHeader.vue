@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import MainLogo from './MainLogo.vue';
+import MainLogo from '@/components/main/MainLogo.vue';
 </script>
 
 <template>

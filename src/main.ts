@@ -1,7 +1,7 @@
 import { createApp } from 'vue';
-import App from '@/core/App.vue';
 import router from '@/plugins/router';
 import emitter from '@/plugins/emitter';
+import App from '@/components/App.vue';
 
 const app = createApp(App);
 

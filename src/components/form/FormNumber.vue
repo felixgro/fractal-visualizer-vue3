@@ -1,16 +1,3 @@
-<template>
-	<label :for="id('number')">{{ label }}</label>
-	<input
-		type="number"
-		:id="id('number')"
-		:max="max"
-		:min="min"
-		:step="step"
-		:value="modelValue"
-		@input="emitUpdateEvent"
-	/>
-</template>
-
 <script lang="ts" setup>
 import useUid from '@/composables/useUid';
 
@@ -46,3 +33,16 @@ const emitUpdateEvent = (e: Event) => {
 	emits('update:modelValue', parseFloat(value));
 };
 </script>
+
+<template>
+	<label :for="id('number')">{{ label }}</label>
+	<input
+		type="number"
+		:id="id('number')"
+		:max="max"
+		:min="min"
+		:step="step"
+		:value="modelValue"
+		@input="emitUpdateEvent"
+	/>
+</template>
