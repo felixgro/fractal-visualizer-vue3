@@ -1,8 +1,8 @@
 <template>
-	<label :for="uid">{{ label }}</label>
+	<label :for="id('number')">{{ label }}</label>
 	<input
 		type="number"
-		:id="uid"
+		:id="id('number')"
 		:max="max"
 		:min="min"
 		:step="step"
@@ -14,9 +14,9 @@
 <script lang="ts" setup>
 import useUid from '@/composables/useUid';
 
-const emits = defineEmits(['update:modelValue']);
+const { id } = useUid();
 
-const { uid } = useUid();
+const emits = defineEmits(['update:modelValue']);
 
 defineProps({
 	modelValue: {

@@ -1,8 +1,8 @@
 <template>
-	<label :for="uid">{{ label }}</label>
+	<label :for="id('range')">{{ label }}</label>
 	<input
 		type="range"
-		:id="uid"
+		:id="id('range')"
 		:min="min"
 		:max="max"
 		:step="step"
@@ -16,7 +16,7 @@
 import { defineProps, defineEmits } from 'vue';
 import useUID from '@/composables/useUid';
 
-const { uid } = useUID();
+const { id } = useUID();
 
 const emits = defineEmits(['update:modelValue']);
 

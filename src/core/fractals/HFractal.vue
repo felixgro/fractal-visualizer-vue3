@@ -83,7 +83,7 @@ draw((pen) => {
 </script>
 
 <template>
-	<Form.Range label="Step" v-model="config.step" :max="10" />
+	<Form.Range label="Step" v-model="config.step" :max="15" />
 	<Form.Range
 		label="Scale"
 		v-model="config.scale"
@@ -106,7 +106,7 @@ draw((pen) => {
 		label="Randomize"
 		v-model="config.random"
 	>
-		<Form.Number label="Seed" v-model="config.seed" />
+		<Form.Number label="Seed" v-model="config.seed" :max="1000" />
 		<Form.Range
 			label="Angle Variation"
 			v-model="config.angleRange"

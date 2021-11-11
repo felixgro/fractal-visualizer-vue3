@@ -1,21 +1,7 @@
-<template>
-	<label>
-		<input
-			type="checkbox"
-			:checked="modelValue"
-			@change="emitUpdateEvent"
-		/>
-		{{ label }}
-	</label>
-	<div v-if="modelValue">
-		<slot />
-	</div>
-</template>
-
 <script lang="ts" setup>
 import useUid from '@/composables/useUid';
 
-const { uid } = useUid();
+const { id } = useUid();
 
 const emits = defineEmits(['update:modelValue']);
 
@@ -35,3 +21,18 @@ const emitUpdateEvent = (e: Event) => {
 	emits('update:modelValue', value);
 };
 </script>
+
+<template>
+	<label :for="id('checkbox')">
+		<input
+			type="checkbox"
+			:id="id('checkbox')"
+			:checked="modelValue"
+			@change="emitUpdateEvent"
+		/>
+		{{ label }}
+	</label>
+	<div v-if="modelValue">
+		<slot />
+	</div>
+</template>

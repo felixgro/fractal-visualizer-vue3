@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import useUID from '@/composables/useUid';
-const { uid } = useUID();
+const { id } = useUID();
 
 const emits = defineEmits(['update:modelValue']);
 
@@ -22,6 +22,6 @@ const emitUpdateEvent = (event: Event) => {
 </script>
 
 <template>
-	<label :for="uid">{{ label }}</label>
-	<input type="color" :id="uid" @input="emitUpdateEvent" />
+	<label :for="id('color')">{{ label }}</label>
+	<input type="color" :id="id('color')" @input="emitUpdateEvent" />
 </template>

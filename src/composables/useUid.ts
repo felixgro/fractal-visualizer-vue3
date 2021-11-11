@@ -1,18 +1,19 @@
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onBeforeMount } from 'vue';
 
 // internal id count to prevent duplicate ids
-let __id__ = 0;
+let _id = 0;
 
-const useUID = () => {
-    const id = ref(__id__);
+const useUid = () => {
+    // unique id for each component
+    const uid = ref(_id);
 
-    // unique id string for id assignments in dom
-    const uid = computed(() => `uid_${id.value}`);
+    // generate unique id string for dom element within component
+    const id = (label: string) => `${label}_${uid.value}`;
 
-    // increment id for next component
-    onMounted(() => __id__++);
+    // increment internal id for each component
+    onBeforeMount(() => _id++);
 
-    return { uid };
+    return { id, uid };
 }
 
-export default useUID;
+export default useUid;
