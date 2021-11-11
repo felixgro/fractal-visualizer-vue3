@@ -76,14 +76,17 @@ const useFractal = <FC extends BaseObject>(opts: FractalOptions<FC>): FractalRet
     const saveFractal = () => {
         const worker = new ImageWorker();
 
-        worker.onmessage = (e: MessageEvent<Blob>) => downloadImageBlob(e.data, 'fractal.png');
+        worker.onmessage = (e: MessageEvent<Blob>) => {
+            downloadImageBlob(e.data, 'fractal.png');
+            worker.terminate();
+        };
 
         const imageData: SaveImageMessage = {
             fractal: 'HFractal',
             styles: { ...styles },
             state: { ...config },
-            dimensions: [5000, 5000],
-            format: 'png',
+            dimensions: [1000, 1000],
+            format: 'webp',
         };
         worker.postMessage(imageData);
     };

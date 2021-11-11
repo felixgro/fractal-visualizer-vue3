@@ -2,6 +2,7 @@ import HFractal from '@/core/algorithms/HFractal';
 import Pen from '@/libs/Pen';
 import { SaveImageMessage } from '@/composables/useFractal';
 
+
 // this worker thread is responsible for generating an image in given size and format
 // when done, it returns the image data as blob to the main thread
 self.onmessage = async ({ data }: MessageEvent<SaveImageMessage>) => {
@@ -22,10 +23,13 @@ self.onmessage = async ({ data }: MessageEvent<SaveImageMessage>) => {
     (HFractal as any).call({}, pen, data.state);
 
     // get the image data from the offscreen canvas and convert it to blob type
+    // FIXME: only works with png, not jpeg or web
     const imageBlob = await canvas.convertToBlob({
         type: `image/${data.format}`,
         quality: 1
     });
+
+    console.log('done');
 
     // return the generated blob to the main thread
     self.postMessage(imageBlob);

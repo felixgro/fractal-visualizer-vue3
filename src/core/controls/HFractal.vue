@@ -5,11 +5,11 @@ import drawHandler, { HFractal } from '@/core/algorithms/HFractal';
 
 const { config } = useFractal<HFractal>({
 	config: {
-		step: 5,
-		scale: 0.5,
-		angleDeg: 90,
+		step: 8,
+		scale: 1,
+		angleDeg: 15,
 		angle: 0,
-		trunkRatio: 0.5,
+		trunkRatio: 0.3,
 		random: true,
 		seed: 40,
 		angleVariation: 0,
