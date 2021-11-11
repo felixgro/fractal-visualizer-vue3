@@ -13,12 +13,12 @@ const styles = reactive<FractalStyles>({
 });
 
 watch(styles, (newStyles) => {
-	emitter.emit('fractal.style', newStyles);
-	emitter.emit('fractal.render');
+	emitter.emit('fractal:style', newStyles);
+	emitter.emit('fractal:render');
 });
 
 const emitSaveEvent = (e: Event) => {
-	emitter.emit('fractal.save');
+	emitter.emit('fractal:save');
 };
 </script>
 

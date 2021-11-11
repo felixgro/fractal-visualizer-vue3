@@ -1,97 +1,85 @@
-import { ref, reactive, onMounted, watch } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import useEmitter from '@/composables/useEmitter';
+import useScopedWatch from '@/composables/useScopedWatch';
 import Pen from '@/libs/Pen';
 
-export interface RenderOptions<ConfigType> {
+type BaseObject = { [key: string]: any };
+
+type DrawHandler<ConfigType> = (pen: Pen, config: ConfigType) => void;
+
+export interface FractalOptions<ConfigType> {
+    config: ConfigType,
     ignore?: (keyof ConfigType)[];
+    drawHandler: DrawHandler<ConfigType>
 }
 
 export interface FractalStyles {
-    bg: string,
-    fg: string,
-    lw: number
+    bg: string;
+    fg: string;
+    lw: number;
 }
 
-export interface Fractal<ConfigType> {
-    config: ConfigType,
-    draw: (fn: DrawHandler) => void
+export interface FractalReturn<ConfigType> {
+    config: ConfigType
 }
 
-export type DrawHandler = (pen: Pen) => void;
+// defines draw handler for fractal in seperate file.
+export const defineFractal = <ConfigType>(handler: DrawHandler<ConfigType>) => handler;
 
-const useFractal = <FC extends { [key: string]: any }>(data: FC, opts: RenderOptions<FC> = {}): Fractal<FC> => {
+const useFractal = <FC extends BaseObject>(opts: FractalOptions<FC>): FractalReturn<FC> => {
     // reactive objects for storing current fractal state
-    const config = reactive(data);
+    const config = reactive<FC>(opts.config);
     const styles = reactive<FractalStyles>({
-        bg: '#fff',
-        fg: '#000',
+        bg: '#ffffff',
+        fg: '#000000',
         lw: 3
     });
-
-    // stores canvas element as well as it's rendering context
-    const renderer = ref<HTMLCanvasElement>();
-    const ctx = ref<CanvasRenderingContext2D>();
-
-    // stores drawing logic for current fractal
-    const drawHandler = ref<DrawHandler>();
-
-    // used to store the draw logic as a callback in each fractal component
-    const draw = (fn: DrawHandler) => drawHandler.value = fn;
 
     // used to listen for style change or rerender events
     const emitter = useEmitter();
 
-    // renders current fractal state on canvas
-    const renderFractal = (): void => {
-        if (!renderer.value || !ctx.value)
-            throw new Error("Cannot find canvas element or it's rendering context");
+    // store canvas element and it's rendering context
+    const renderer = ref<HTMLCanvasElement>();
+    const pen = computed<Pen | null>(() => {
+        return renderer.value ? new Pen(renderer.value) : null;
+    });
 
-        const pen = new Pen(ctx.value)
-            .clear()
+    const renderFractal = () => {
+        if (!renderer.value || !pen.value)
+            throw new Error(`Cannot find canvas element or it's rendering context`);
+
+        pen.value.clear()
             .setBackground(styles.bg)
-            .setStrokeStyle(styles.fg)
             .setFillStyle(styles.fg)
+            .setStrokeStyle(styles.fg)
             .setLineWidth(styles.lw);
 
-        drawHandler.value?.call({}, pen);
+        opts.drawHandler.call({}, pen.value, config);
     }
 
-    // TODO: Save Fractal in specified dimensions using a web worker
-    const saveFractal = (): void => {
-        console.log('save');
+    const styleFractal = (s: FractalStyles) => {
+        styles.bg = s.bg;
+        styles.fg = s.fg;
+        styles.lw = s.lw;
     }
 
-    // generate array for watched config keys and exclude
-    // ignored keys when specified in render options
-    const watchedKeys: (() => keyof FC)[] = [];
-    for (const key in config) {
-        if (opts?.ignore && opts.ignore.indexOf(key) >= 0) continue;
-        watchedKeys.push(() => config[key]);
-    }
+    const saveFractal = () => console.log('save');
 
-    // watch for changes in config object and rerender fractal if changed
-    watch(watchedKeys, renderFractal);
-
-    // initialize renderer and context along with event listeners
-    // when component has finished mounting
     onMounted(() => {
         renderer.value = document.querySelector('.fractalRenderer') as HTMLCanvasElement;
-        ctx.value = renderer.value.getContext('2d')!;
 
-        emitter.on('fractal.render', renderFractal, {
+        emitter.on('fractal:save', saveFractal);
+        emitter.on('fractal:style', styleFractal);
+        emitter.on('fractal:render', renderFractal, {
             immediate: true
-        });
-
-        emitter.on('fractal.save', saveFractal);
-
-        emitter.on('fractal.style', (s: FractalStyles) => {
-            styles.bg = s.bg;
-            styles.fg = s.fg;
-            styles.lw = s.lw;
         });
     });
 
-    return { config, draw }
+    useScopedWatch(config, renderFractal, {
+        ignore: opts.ignore
+    });
+
+    return { config };
 }
 
-export default useFractal
+export default useFractal;
