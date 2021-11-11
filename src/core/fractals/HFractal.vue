@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import * as Form from '@/components/form';
 import useFractal from '@/composables/useFractal';
-import useRandom from '@/composables/useRandom';
+import usePrng from '@/composables/usePrng';
 import Vec2 from '@/libs/Vec2';
 
-const random = useRandom();
+const random = usePrng();
 
 const { draw, config } = useFractal(
 	{

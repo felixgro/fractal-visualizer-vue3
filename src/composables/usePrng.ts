@@ -11,7 +11,7 @@ interface Random {
     range: (max: number, negative?: boolean) => number;
 }
 
-const useRandom = (options?: RandomOptions): Random => {
+const usePrng = (options?: RandomOptions): Random => {
     const seed = ref<number>(options?.seed ?? 0);
     const generator = ref<() => number>(mulberry32(seed.value));
 
@@ -42,7 +42,7 @@ const useRandom = (options?: RandomOptions): Random => {
     }
 }
 
-export default useRandom;
+export default usePrng;
 
 // pseudo random number generator function mulberry32
 // see: https://stackoverflow.com/questions/521295/seeding-the-random-number-generator-in-javascript
