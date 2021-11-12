@@ -27,7 +27,7 @@ const emitSaveEvent = () => {
 		<Form.Button label="Save" @click="emitSaveEvent" />
 		<Form.Color label="BG" v-model="styles.bg" />
 		<Form.Color label="FG" v-model="styles.fg" />
-		<Form.Number label="LW" v-model="styles.lw" />
+		<Form.Number label="LW" v-model="styles.lw" :step="0.1" />
 
 		<RouterView />
 	</form>

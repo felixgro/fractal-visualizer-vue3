@@ -1,7 +1,11 @@
 import { createApp } from 'vue';
+import App from '@/components/App.vue';
+import registerPolyfills from '@/utils/polyfills';
 import router from '@/plugins/router';
 import emitter from '@/plugins/emitter';
-import App from '@/components/App.vue';
+
+// loads all necessary polyfills
+registerPolyfills();
 
 const app = createApp(App);
 

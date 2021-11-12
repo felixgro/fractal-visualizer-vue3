@@ -1,35 +1,54 @@
-import HFractal from '@/core/algorithms/HFractal';
+import type { SaveImageMessage } from '@/composables/useFractal';
+import { getFileName } from '@/utils/file';
+import { throwIf } from '@/utils/error';
 import Pen from '@/libs/Pen';
-import { SaveImageMessage } from '@/composables/useFractal';
 
+// This worker thread is responsible for generating an image in given dimensions and format.
+// When done, it returns the image data as blob to the main thread
 
-// this worker thread is responsible for generating an image in given size and format
-// when done, it returns the image data as blob to the main thread
+// Generates object which contains the names of all available algorithms located in src/core/algorithms
+// as well as an asynchronous function which returns the exported module of each algorithm file.
+// All algorithms are able to run in the context of the worker thread.
+const getAlgorithms = () => {
+    const algorithmImport = import.meta.glob('./algorithms/*.ts');
+    return Object.entries(algorithmImport).map(([path, module]) => {
+        return {
+            name: getFileName(path, false),
+            module
+        }
+    });
+}
+
+// Start image processing when SaveImageMessage is received
 self.onmessage = async ({ data }: MessageEvent<SaveImageMessage>) => {
-    // create offscreen canvas & get it's rendering context for image generation
-    const canvas = new OffscreenCanvas(data.dimensions[0], data.dimensions[1]);
-    const ctx = canvas.getContext('2d')!;
+    // offscreen canvas for image generation
+    const offscreenCanvas = new OffscreenCanvas(data.dimensions[0], data.dimensions[1]);
 
-    // inherit the pen's styles from the main thread
-    const pen = new Pen(ctx)
+    // search for the requested fractal algorithm module by name
+    const algorithm = getAlgorithms().find(({ name }) => {
+        return name.toLowerCase() === data.fractal.toLowerCase()
+    })!;
+
+    throwIf(!algorithm, `Algorithm ${data.fractal} not found`);
+
+    // instantiate pen for drawing on offscreen canvas
+    // and inherit all fractal styles from the main thread
+    const pen = new Pen(offscreenCanvas)
         .setBackground(data.styles.bg)
         .setFillStyle(data.styles.fg)
         .setStrokeStyle(data.styles.fg)
         .setLineWidth(data.styles.lw);
 
-    // calls specified draw handler with given state as config and
-    // a pen, which draws on the offscreen canvas.
-    // TODO: dynamically load the algorithm based of data.fractal
-    (HFractal as any).call({}, pen, data.state);
+    // load the default exported function of the algorithm module and
+    // execute it using the offset canvas pen
+    const drawHandler = (await algorithm.module()).default;
+    drawHandler.call({}, pen, data.state);
 
-    // get the image data from the offscreen canvas and convert it to blob type
-    // FIXME: only works with png, not jpeg or web
-    const imageBlob = await canvas.convertToBlob({
+    // convert current offscreen canvas image to blob with requested format
+    const imageBlob = await offscreenCanvas.convertToBlob({
         type: `image/${data.format}`,
         quality: 1
     });
-
-    console.log('done');
 
     // return the generated blob to the main thread
     self.postMessage(imageBlob);

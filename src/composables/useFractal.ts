@@ -3,7 +3,7 @@ import ImageWorker from '@/core/ImageWorker?worker';
 import useEmitter from '@/composables/useEmitter';
 import useScopedWatch from '@/composables/useScopedWatch';
 import Pen from '@/libs/Pen';
-import { downloadImageBlob } from '@/helpers/file';
+import { downloadBlob } from '@/utils/file';
 
 type BaseObject = { [key: string]: any };
 
@@ -27,11 +27,12 @@ export interface FractalReturn<ConfigType> {
 
 export interface SaveImageMessage {
     fractal: string,
-    state: BaseObject,
+    format: string;
     styles: FractalStyles,
     dimensions: [number, number],
-    format: string;
+    state: { [key: string]: any },
 }
+
 
 // used for type hints when defining a draw handler in seperate file.
 export const defineFractal = <ConfigType>(handler: DrawHandler<ConfigType>) => handler;
@@ -74,20 +75,21 @@ const useFractal = <FC extends BaseObject>(opts: FractalOptions<FC>): FractalRet
     }
 
     const saveFractal = () => {
+        const imageData: SaveImageMessage = {
+            fractal: 'hfractal',
+            styles: { ...styles },
+            state: { ...config },
+            dimensions: [3000, 3000],
+            format: 'webp',
+        };
+
         const worker = new ImageWorker();
 
         worker.onmessage = (e: MessageEvent<Blob>) => {
-            downloadImageBlob(e.data, 'fractal.png');
+            downloadBlob(e.data, 'fractal.png');
             worker.terminate();
         };
 
-        const imageData: SaveImageMessage = {
-            fractal: 'HFractal',
-            styles: { ...styles },
-            state: { ...config },
-            dimensions: [1000, 1000],
-            format: 'webp',
-        };
         worker.postMessage(imageData);
     };
 

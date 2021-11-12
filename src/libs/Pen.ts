@@ -1,19 +1,20 @@
 import BasePen from 'canvas-pen';
 
+// Pen library for abstracting canvas2d drawing operations.
+// Every draw operation within each fractal's draw handler method
+// is utilizing an instance of this Pen. Each method must be executable 
+// within the context of a regular canvas element as well as the context of an
+// offscreen canvas within a web worker. This enables the fractal to be redrawn
+// within the ImageWorker when exporting a fractal as an image.
+// canvas-pen: https://github.com/felixgro/pen
 export default class Pen extends BasePen {
+    // This class acts as a proxy to the canvas-pen library.
+    // It may be extendend in the future to allow for more complex drawing operations
 
-    constructor(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
-        super((ctx as CanvasRenderingContext2D));
-    }
-
-    // set background color of canvas
-    public setBackground(color: string): this {
-        const center: [number, number] = [this.canvas.width / 2, this.canvas.height / 2];
-
-        return this.save()
-            .setFillStyle(color)
-            .rect(center, this.canvas.width, this.canvas.height)
-            .fill()
-            .restore();
+    // Line width must be relative to canvas width to maintain consistency
+    // when exporting current fractal as an image with varying dimensions.
+    public setLineWidth(relWidth: number): this {
+        this.ctx.lineWidth = this.canvas.width * (relWidth / 100);
+        return this;
     }
 }

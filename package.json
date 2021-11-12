@@ -9,7 +9,7 @@
 	},
 	"dependencies": {
 		"@felixgro/vec2": "^1.3.0",
-		"canvas-pen": "^0.3.0",
+		"canvas-pen": "^0.4.1",
 		"vue": "^3.2.16",
 		"vue-router": "^4.0.0"
 	},
