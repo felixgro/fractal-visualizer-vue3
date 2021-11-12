@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-import { defineProps, defineEmits } from 'vue';
 import useUID from '@/composables/useUid';
 
 const { id } = useUID();
-
 const emits = defineEmits(['update:modelValue']);
 
 defineProps({

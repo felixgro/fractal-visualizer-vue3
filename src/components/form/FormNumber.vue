@@ -2,7 +2,6 @@
 import useUid from '@/composables/useUid';
 
 const { id } = useUid();
-
 const emits = defineEmits(['update:modelValue']);
 
 defineProps({
