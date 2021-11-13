@@ -6,7 +6,7 @@ import BasePen from 'canvas-pen';
 // within the context of a regular canvas element as well as the context of an
 // offscreen canvas within a web worker. This enables the fractal to be redrawn
 // within the ImageWorker when exporting a fractal as an image.
-// canvas-pen: https://github.com/felixgro/pen
+// canvas-pen: https://github.com/felixgro/canvas-pen
 export default class Pen extends BasePen {
     // This class acts as a proxy to the canvas-pen library.
     // It may be extendend in the future to allow for more complex drawing operations
