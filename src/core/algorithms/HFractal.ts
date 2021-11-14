@@ -1,4 +1,5 @@
 import { defineFractal } from '@/composables/useFractal'
+import { createGradient } from '@/utils/color';
 import Prng from '@/libs/Prng';
 import Vec2 from '@/libs/Vec2';
 
@@ -12,18 +13,33 @@ export interface HFractal {
     seed: number;
     angleVariation: number;
     lengthVariation: number;
+    gradient: boolean;
+    range: number;
+    fromColor: string;
+    toColor: string;
 }
 
 const random = new Prng();
 
 export default defineFractal<HFractal>((pen, config) => {
-    // assigns current seed to pseudo random number generator
-    // & resets the prng even if the seed value has not changed.
+    pen.setLineJoin('round').setLineCap('round');
+
+    // converts degrees to radians for trig functions
     config.angle = Vec2.degToRad(config.angleDeg);
+    // resets pseudo-random number generator
     random.seed = config.seed;
+
+    // creates step-based gradient generation method
+    const gradient = createGradient({
+        active: config.gradient,
+        steps: Math.ceil((config.step) * config.range) + 1,
+        from: config.fromColor,
+        to: config.toColor
+    });
 
     // recursive fractal function
     const hFractal = (a: Vec2, b: Vec2, limit: number): void => {
+        const currentLevel = ((config.step - limit));
         const diff = b.clone().subtract(a);
 
         let angle = Vec2.right().angleTo(diff);
@@ -50,8 +66,7 @@ export default defineFractal<HFractal>((pen, config) => {
             .setMagnitude(branchLength)
             .add(pA);
 
-        // draw base branch
-        pen.line(a.pos, pA.pos).stroke();
+        pen.line(a.pos, pA.pos).stroke(gradient(currentLevel));
 
         // recursion limit
         if (limit > 0) {
@@ -59,7 +74,7 @@ export default defineFractal<HFractal>((pen, config) => {
             hFractal(pA, pB, limit - 1);
         } else {
             // draw splitted branch and stop recursion
-            pen.line(pB.pos, pA.pos, pC.pos).stroke();
+            pen.line(pB.pos, pA.pos, pC.pos).stroke(gradient(currentLevel + 1));
         }
     };
 

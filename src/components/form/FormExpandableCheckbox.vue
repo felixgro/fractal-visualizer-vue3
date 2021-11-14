@@ -31,7 +31,7 @@ const emitUpdateEvent = (e: Event) => {
 		/>
 		{{ label }}
 	</label>
-	<div v-if="modelValue">
+	<div v-show="modelValue">
 		<slot />
 	</div>
 </template>

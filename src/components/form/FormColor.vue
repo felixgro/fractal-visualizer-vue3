@@ -23,5 +23,10 @@ const emitUpdateEvent = (event: Event) => {
 
 <template>
 	<label :for="id('color')">{{ label }}</label>
-	<input type="color" :id="id('color')" @input="emitUpdateEvent" />
+	<input
+		type="color"
+		:id="id('color')"
+		@input="emitUpdateEvent"
+		:value="modelValue"
+	/>
 </template>

@@ -10,7 +10,7 @@ type BaseObject = { [key: string]: any };
 type DrawHandler<ConfigType> = (pen: Pen, config: ConfigType, utils?: any) => void;
 
 export interface FractalOptions<ConfigType> {
-    config: ConfigType,
+    state: ConfigType,
     ignore?: (keyof ConfigType)[];
     drawHandler: DrawHandler<ConfigType>
 }
@@ -22,7 +22,7 @@ export interface FractalStyles {
 }
 
 export interface FractalReturn<ConfigType> {
-    config: ConfigType
+    state: ConfigType
 }
 
 export interface SaveImageMessage {
@@ -39,11 +39,11 @@ export const defineFractal = <ConfigType>(handler: DrawHandler<ConfigType>) => h
 
 const useFractal = <FC extends BaseObject>(opts: FractalOptions<FC>): FractalReturn<FC> => {
     // reactive objects for storing current fractal state
-    const config = reactive<FC>(opts.config);
+    const state = reactive<FC>(opts.state);
     const styles = reactive<FractalStyles>({
         bg: '#ffffff',
         fg: '#000000',
-        lw: 3
+        lw: .5
     });
 
     // used to listen for style change or rerender events
@@ -65,7 +65,7 @@ const useFractal = <FC extends BaseObject>(opts: FractalOptions<FC>): FractalRet
             .setStrokeStyle(styles.fg)
             .setLineWidth(styles.lw);
 
-        opts.drawHandler.call({}, pen.value, config);
+        opts.drawHandler.call({}, pen.value, state);
     }
 
     const styleFractal = (s: FractalStyles) => {
@@ -75,12 +75,13 @@ const useFractal = <FC extends BaseObject>(opts: FractalOptions<FC>): FractalRet
     }
 
     const saveFractal = () => {
+        const qualityFractor = 3;
         const imageData: SaveImageMessage = {
             fractal: 'hfractal',
             styles: { ...styles },
-            state: { ...config },
-            dimensions: [3000, 3000],
-            format: 'webp',
+            state: { ...state },
+            dimensions: [675 * qualityFractor, 600 * qualityFractor],
+            format: 'png',
         };
 
         const worker = new ImageWorker();
@@ -103,11 +104,11 @@ const useFractal = <FC extends BaseObject>(opts: FractalOptions<FC>): FractalRet
         });
     });
 
-    useScopedWatch(config, renderFractal, {
+    useScopedWatch(state, renderFractal, {
         ignore: opts.ignore
     });
 
-    return { config };
+    return { state };
 }
 
 export default useFractal;

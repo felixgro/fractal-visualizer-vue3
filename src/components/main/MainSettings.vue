@@ -1,15 +1,27 @@
 <script lang="ts" setup>
 import type { FractalStyles } from '@/composables/useFractal';
+import { ref, reactive, watch, onMounted, onUnmounted } from 'vue';
 import useEmitter from '@/composables/useEmitter';
 import * as Form from '@/components/form';
-import { reactive, watch } from 'vue';
 
+const show = ref(true);
 const emitter = useEmitter();
-
 const styles = reactive<FractalStyles>({
 	bg: '#ffffff',
 	fg: '#000000',
-	lw: 3,
+	lw: 0.5,
+});
+
+const SpaceBarEvent = (e: KeyboardEvent) => {
+	if (e.code === 'Space') show.value = !show.value;
+};
+
+onMounted(() => {
+	window.addEventListener('keydown', SpaceBarEvent);
+});
+
+onUnmounted(() => {
+	window.removeEventListener('keydown', SpaceBarEvent);
 });
 
 watch(styles, (newStyles) => {
@@ -23,7 +35,7 @@ const emitSaveEvent = () => {
 </script>
 
 <template>
-	<form @submit.prevent>
+	<form @submit.prevent style="width: 160px" v-show="show">
 		<Form.Button label="Save" @click="emitSaveEvent" />
 		<Form.Color label="BG" v-model="styles.bg" />
 		<Form.Color label="FG" v-model="styles.fg" />
