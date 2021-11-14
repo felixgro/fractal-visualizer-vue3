@@ -2,6 +2,7 @@
 import type { FractalStyles } from '@/composables/useFractal';
 import { ref, reactive, watch, onMounted, onUnmounted } from 'vue';
 import useEmitter from '@/composables/useEmitter';
+import TempCover from '@/components/DimensionIndicator.vue';
 import * as Form from '@/components/form';
 
 const show = ref(true);
@@ -46,5 +47,7 @@ const emitSaveEvent = () => {
 		<Form.Number label="LW" v-model="styles.lw" :step="0.1" />
 
 		<RouterView />
+
+		<TempCover />
 	</form>
 </template>
