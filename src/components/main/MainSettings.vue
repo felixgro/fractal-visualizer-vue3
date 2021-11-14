@@ -35,7 +35,11 @@ const emitSaveEvent = () => {
 </script>
 
 <template>
-	<form @submit.prevent style="width: 160px" v-show="show">
+	<form
+		@submit.prevent
+		style="width: 160px; background: #ccc"
+		v-show="show"
+	>
 		<Form.Button label="Save" @click="emitSaveEvent" />
 		<Form.Color label="BG" v-model="styles.bg" />
 		<Form.Color label="FG" v-model="styles.fg" />

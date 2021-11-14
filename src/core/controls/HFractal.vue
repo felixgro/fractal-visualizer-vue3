@@ -37,7 +37,7 @@ const { state } = useFractal<HFractal>({
 	<Form.Range
 		label="Scale"
 		v-model="state.scale"
-		:max="1"
+		:max="3"
 		:step="0.01"
 	/>
 	<Form.Range

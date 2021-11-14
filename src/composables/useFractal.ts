@@ -80,14 +80,14 @@ const useFractal = <FC extends BaseObject>(opts: FractalOptions<FC>): FractalRet
             fractal: 'hfractal',
             styles: { ...styles },
             state: { ...state },
-            dimensions: [675 * qualityFractor, 600 * qualityFractor],
+            dimensions: [828 * qualityFractor, 1792 * qualityFractor],
             format: 'png',
         };
 
         const worker = new ImageWorker();
 
         worker.onmessage = (e: MessageEvent<Blob>) => {
-            downloadBlob(e.data, 'fractal.png');
+            downloadBlob(e.data, 'iPhone_Wallpaper.png');
             worker.terminate();
         };
 
