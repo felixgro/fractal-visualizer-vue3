@@ -233,10 +233,10 @@ call-bind@^1.0.2:
     function-bind "^1.1.1"
     get-intrinsic "^1.0.2"
 
-canvas-pen@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/canvas-pen/-/canvas-pen-0.4.1.tgz#7bdb760468253e35f69acb3696e7b4b34dd5fb8d"
-  integrity sha512-SKyjSeFDjR0WuxH4FgPi6CwsV+6K4a7BjU8bgtElQkAbt8kXabSKiOP5V+CqQ4j1/Lnf5Kk2/xcyvBA87Owl5Q==
+canvas-pen@^0.5.4:
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/canvas-pen/-/canvas-pen-0.5.4.tgz#d26f4d8527c68bf75fff02341b5853571cde5b8e"
+  integrity sha512-uilzehcFpTPDynp0aN4TJUKr/3imw29K/O2OUi4zS9TXV01DqjGe5QGrr973xa88qRqfmN08yeMR6zCdZdcavg==
 
 character-parser@^2.2.0:
   version "2.2.0"

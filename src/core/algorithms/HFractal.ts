@@ -22,7 +22,7 @@ export interface HFractal {
 const random = new Prng();
 
 export default defineFractal<HFractal>((pen, config) => {
-    pen.setLineJoin('round').setLineCap('round');
+    pen.setStrokeJoin('round').setStrokeCap('round');
 
     // converts degrees to radians for trig functions
     config.angle = Vec2.degToRad(config.angleDeg);
