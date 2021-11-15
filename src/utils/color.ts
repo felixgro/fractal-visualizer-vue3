@@ -4,6 +4,7 @@ interface RGB {
     b: number;
 }
 
+// convert any hex string to rgb object
 export const hexToRgb = (hex: string): RGB => {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     if (!result) throw new Error(`Cannot convert hex '${hex}' to rgb`);
@@ -15,10 +16,12 @@ export const hexToRgb = (hex: string): RGB => {
     };
 }
 
+// convert rgb object to hex string
 export const rgbToHex = (rgb: RGB) => {
     return "#" + ((1 << 24) + (rgb.r << 16) + (rgb.g << 8) + rgb.b).toString(16).slice(1);
 }
 
+// creates a step-based grdient function
 export const createGradient = (opts: { steps: number, from: string, to: string, active: boolean }) => {
     return (step: number) => {
         if (!opts.active) return;

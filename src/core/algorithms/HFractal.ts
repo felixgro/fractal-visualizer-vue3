@@ -23,13 +23,9 @@ const random = new Prng();
 
 export default defineFractal<HFractal>((pen, config) => {
     pen.setStrokeJoin('round').setStrokeCap('round');
-
-    // converts degrees to radians for trig functions
     config.angle = Vec2.degToRad(config.angleDeg);
-    // resets pseudo-random number generator
     random.seed = config.seed;
 
-    // creates step-based gradient generation method
     const gradient = createGradient({
         active: config.gradient,
         steps: Math.ceil((config.step) * config.range) + 1,
@@ -37,7 +33,7 @@ export default defineFractal<HFractal>((pen, config) => {
         to: config.toColor
     });
 
-    // recursive fractal function
+    // recursive h-fractal function
     const hFractal = (a: Vec2, b: Vec2, limit: number): void => {
         const currentLevel = ((config.step - limit));
         const diff = b.clone().subtract(a);
