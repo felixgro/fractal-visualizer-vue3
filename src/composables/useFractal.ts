@@ -1,5 +1,5 @@
 import type * as FRCTL from '@/types/fractal';
-import { ref, reactive, computed, onMounted } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import ImageWorker from '@/core/ImageWorker?worker';
 import useEmitter from '@/composables/useEmitter';
 import useWorker from '@/composables/useWorker';
