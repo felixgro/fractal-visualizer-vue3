@@ -61,7 +61,7 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
             fractal: 'hfractal',
             state: { ...state },
             styles: { ...styles },
-            dimensions: [3000, 3000],
+            dimensions: [1500 * 3, 500 * 3],
             format: 'image/png',
         };
 
