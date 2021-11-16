@@ -2,6 +2,7 @@
 import MainLogo from '@/components/main/MainLogo.vue';
 import { inject } from 'vue';
 
+// TODO: refactor to use composable helper method
 const state = inject('state') as any;
 </script>
 
