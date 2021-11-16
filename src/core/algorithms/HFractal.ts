@@ -21,45 +21,45 @@ export interface HFractal {
 
 const random = new Prng();
 
-export default defineFractal<HFractal>((pen, config) => {
+export default defineFractal<HFractal>((pen, state) => {
     pen.setStrokeJoin('round').setStrokeCap('round');
-    config.angle = Vec2.degToRad(config.angleDeg);
-    random.seed = config.seed;
+    state.angle = Vec2.degToRad(state.angleDeg);
+    random.seed = state.seed;
 
     const gradient = createGradient({
-        active: config.gradient,
-        steps: Math.ceil((config.step) * config.range) + 1,
-        from: config.fromColor,
-        to: config.toColor
+        active: state.gradient,
+        steps: Math.ceil((state.step) * state.range) + 1,
+        from: state.fromColor,
+        to: state.toColor
     });
 
     // recursive h-fractal function
     const hFractal = (a: Vec2, b: Vec2, limit: number): void => {
-        const currentLevel = ((config.step - limit));
+        const currentLevel = ((state.step - limit));
         const diff = b.clone().subtract(a);
 
         let angle = Vec2.right().angleTo(diff);
-        let branchLength = diff.length * (1 - config.trunkRatio);
+        let branchLength = diff.length * (1 - state.trunkRatio);
 
-        if (config.random) {
+        if (state.random) {
             // TODO: define random branch length and angle for each line individually
             angle +=
                 random.range(1, true) *
-                Vec2.degToRad(config.angleVariation);
+                Vec2.degToRad(state.angleVariation);
             branchLength +=
-                random.range(1, true) * config.lengthVariation;
+                random.range(1, true) * state.lengthVariation;
             if (branchLength < pen.ctx.lineWidth) branchLength = pen.ctx.lineWidth;
         }
 
-        const pA = diff.multiply(config.trunkRatio).add(a);
+        const pA = diff.multiply(state.trunkRatio).add(a);
 
         const pB = Vec2.right()
-            .rotate(angle + config.angle)
+            .rotate(angle + state.angle)
             .setMagnitude(branchLength)
             .add(pA);
 
         const pC = Vec2.right()
-            .rotate(angle - config.angle)
+            .rotate(angle - state.angle)
             .setMagnitude(branchLength)
             .add(pA);
 
@@ -79,9 +79,9 @@ export default defineFractal<HFractal>((pen, config) => {
     const pA = new Vec2(pen.canvas.width / 2, pen.canvas.height);
     const pB = new Vec2(
         pen.canvas.width / 2,
-        2 - (1 - pen.canvas.height * (1 - config.scale))
+        2 - (1 - pen.canvas.height * (1 - state.scale))
     );
 
     // start fractal recursion..
-    hFractal(pA, pB, config.step);
+    hFractal(pA, pB, state.step);
 });

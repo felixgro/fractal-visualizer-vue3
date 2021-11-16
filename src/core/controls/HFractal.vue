@@ -1,15 +1,8 @@
 <script lang="ts" setup>
+import { onMounted } from '@vue/runtime-core';
 import * as Form from '@/components/form';
 import useFractal from '@/core/useFractal';
 import drawHandler, { HFractal } from '@/core/algorithms/HFractal';
-import { onMounted } from '@vue/runtime-core';
-
-onMounted(() => {
-	window.addEventListener('keydown', (e: KeyboardEvent) => {
-		if (e.code === 'KeyS' && e.shiftKey) return state.seed--;
-		if (e.code === 'KeyS') state.seed++;
-	});
-});
 
 const { state } = useFractal<HFractal>({
 	state: {
@@ -27,8 +20,15 @@ const { state } = useFractal<HFractal>({
 		toColor: '#ff0000',
 		range: 1,
 	},
-	drawHandler,
 	ignore: ['angle'],
+	drawHandler,
+});
+
+onMounted(() => {
+	window.addEventListener('keydown', (e: KeyboardEvent) => {
+		if (e.code === 'KeyS' && e.shiftKey) return state.seed--;
+		if (e.code === 'KeyS') state.seed++;
+	});
 });
 </script>
 
