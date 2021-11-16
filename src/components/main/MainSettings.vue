@@ -6,6 +6,8 @@ import * as Form from '@/components/form';
 
 const show = ref(true);
 const emitter = useEmitter();
+
+// TODO: move styles to global storage
 const styles = reactive<FRCTL.Styles>({
 	bg: '#ffffff',
 	fg: '#000000',

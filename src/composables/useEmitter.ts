@@ -1,5 +1,5 @@
-import { getCurrentInstance } from 'vue';
 import type { Emitter } from '@/plugins/emitter';
+import { getCurrentInstance } from 'vue';
 
 export default (): Emitter => {
     const internalAppInstance = getCurrentInstance();

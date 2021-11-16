@@ -1,4 +1,5 @@
-import { Ref, ref, onMounted, onUnmounted } from 'vue';
+import type { Ref } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 
 export type EventSubject = Ref | Window;
 

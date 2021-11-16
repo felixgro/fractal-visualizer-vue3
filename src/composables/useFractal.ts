@@ -1,10 +1,11 @@
 import type * as FRCTL from '@/types/fractal';
 import { ref, reactive, onMounted } from 'vue';
 import ImageWorker from '@/core/ImageWorker?worker';
-import { downloadBlob } from '@/utils/file';
-import { watchScoped } from '@/utils/vue';
+import useEventListener from '@/composables/useEventListener';
 import useEmitter from '@/composables/useEmitter';
 import useWorker from '@/composables/useWorker';
+import { downloadBlob } from '@/utils/file';
+import { watchScoped } from '@/utils/vue';
 import Pen from '@/libs/Pen';
 
 // used for defining a draw handler in each src/core/alogrithms/*.ts file.
@@ -15,6 +16,7 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
     const renderer = ref<HTMLCanvasElement>();
 
     // TODO: store in global state along with image type and dimensions for export
+    // maybe vuex or https://v3.vuejs.org/guide/state-management.html#simple-state-management-from-scratch
     const styles = reactive<FRCTL.Styles>({
         bg: '#ffffff',
         fg: '#000000',
@@ -70,13 +72,16 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
 
         renderFractal();
 
-        emitter.on('fractal:save', saveFractal);
+        // TODO: remove me!
         emitter.on('fractal:style', styleFractal);
+        emitter.on('fractal:save', saveFractal);
     });
 
     watchScoped(state, renderFractal, {
         ignore: opts.ignore
     });
+
+    useEventListener(window, 'resize', renderFractal);
 
     return { state };
 }
