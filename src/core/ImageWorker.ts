@@ -51,11 +51,9 @@ self.onmessage = async ({ data }: MessageEvent<FRCTL.ExportMessage<FRCTL.BaseSta
         quality: 1
     });
 
-    const fileName = `${data.fractal}.${data.format.split('/')[1]}`;
-
     const saveMessage: FRCTL.SaveMessage = {
-        blob,
-        fileName,
+        fileName: `${data.fractal}.${data.format.split('/')[1]}`,
+        blob
     }
 
     // return the generated blob to the main thread
