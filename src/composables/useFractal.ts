@@ -1,10 +1,10 @@
 import type * as FRCTL from '@/types/fractal';
 import { ref, reactive, onMounted } from 'vue';
 import ImageWorker from '@/core/ImageWorker?worker';
-import useEmitter from '@/composables/useEmitter';
-import useWorker from '@/composables/useWorker';
 import { downloadBlob } from '@/utils/file';
 import { watchScoped } from '@/utils/vue';
+import useEmitter from '@/composables/useEmitter';
+import useWorker from '@/composables/useWorker';
 import Pen from '@/libs/Pen';
 
 // used for defining a draw handler in each src/core/alogrithms/*.ts file.
@@ -43,6 +43,7 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
         opts.drawHandler.call({}, pen, state);
     }
 
+    // TODO: replace this by reactive store
     const styleFractal = (s: FRCTL.Styles) => {
         styles.bg = s.bg;
         styles.fg = s.fg;
@@ -52,6 +53,7 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
     }
 
     const saveFractal = () => {
+        // TODO: check for browser support
         const imageData: FRCTL.ExportMessage<State> = {
             fractal: 'hfractal',
             state: { ...state },
@@ -66,11 +68,10 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
     onMounted(() => {
         renderer.value = document.querySelector('.fractalRenderer') as HTMLCanvasElement;
 
+        renderFractal();
+
         emitter.on('fractal:save', saveFractal);
         emitter.on('fractal:style', styleFractal);
-        emitter.on('fractal:render', renderFractal, {
-            immediate: true
-        });
     });
 
     watchScoped(state, renderFractal, {
