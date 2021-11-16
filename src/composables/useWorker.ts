@@ -16,7 +16,7 @@ const useWorker = <Data>(WorkerClass: new () => Worker, opts?: UseWorkerOptions)
         if (timeoutId.value) clearTimeout(timeoutId.value);
 
         timeoutId.value = setTimeout(() => {
-            worker.value?.terminate();
+            terminate();
         }, opts?.terminateAfter ?? defaultTerminateAfter);
     }
 
@@ -40,7 +40,6 @@ const useWorker = <Data>(WorkerClass: new () => Worker, opts?: UseWorkerOptions)
 
     const post = (msg: any) => {
         if (!worker.value) spawn();
-        console.log('requesting worker job!');
 
         worker.value!.postMessage(msg);
 

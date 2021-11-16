@@ -21,6 +21,7 @@ const getAlgorithms = () => {
 
 // Start image processing when SaveImageMessage is received
 self.onmessage = async ({ data }: MessageEvent<FRCTL.ExportMessage<FRCTL.BaseState>>) => {
+    console.log('requesting worker job');
     // offscreen canvas for image generation
     const offscreenCanvas = new OffscreenCanvas(data.dimensions[0], data.dimensions[1]);
 
@@ -59,4 +60,5 @@ self.onmessage = async ({ data }: MessageEvent<FRCTL.ExportMessage<FRCTL.BaseSta
 
     // return the generated blob to the main thread
     self.postMessage(saveMessage);
+    console.log('worker job completed');
 }

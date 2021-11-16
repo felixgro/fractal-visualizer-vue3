@@ -52,7 +52,6 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
         styles.bg = s.bg;
         styles.fg = s.fg;
         styles.lw = s.lw;
-
         renderFractal();
     }
 
