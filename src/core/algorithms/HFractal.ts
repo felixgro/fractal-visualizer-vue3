@@ -42,12 +42,13 @@ export default defineFractal<HFractal>((pen, config) => {
         let branchLength = diff.length * (1 - config.trunkRatio);
 
         if (config.random) {
+            // TODO: define random branch length and angle for each line individually
             angle +=
                 random.range(1, true) *
                 Vec2.degToRad(config.angleVariation);
             branchLength +=
                 random.range(1, true) * config.lengthVariation;
-            if (branchLength <= 0) branchLength = 0.000001;
+            if (branchLength < pen.ctx.lineWidth) branchLength = pen.ctx.lineWidth;
         }
 
         const pA = diff.multiply(config.trunkRatio).add(a);

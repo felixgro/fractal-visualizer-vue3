@@ -6,4 +6,11 @@ const state = reactive({
     format: 'image/png'
 });
 
-export default { state };
+const methods = {
+    setDimensions(width: number, height: number) {
+        state.width = width;
+        state.height = height;
+    }
+};
+
+export default { state, methods };

@@ -1,11 +1,20 @@
 <script lang="ts" setup>
 import type * as FRCTL from '@/types/fractal';
-import { ref, reactive, watch, onMounted, onUnmounted } from 'vue';
+import {
+	ref,
+	reactive,
+	watch,
+	onMounted,
+	onUnmounted,
+	inject,
+} from 'vue';
 import useEmitter from '@/composables/useEmitter';
 import * as Form from '@/components/form';
 
 const show = ref(true);
 const emitter = useEmitter();
+
+const state = inject('state') as any;
 
 // TODO: move styles to global storage
 const styles = reactive<FRCTL.Styles>({
@@ -19,6 +28,13 @@ const SpaceBarEvent = (e: KeyboardEvent) => {
 };
 
 onMounted(() => {
+	// TODO: remove this testing code!
+	setInterval(() => {
+		state.methods.setDimensions(
+			500 * Math.random(),
+			500 * Math.random()
+		);
+	}, 1000);
 	window.addEventListener('keydown', SpaceBarEvent);
 });
 

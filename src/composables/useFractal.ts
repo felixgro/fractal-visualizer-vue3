@@ -70,20 +70,17 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
 
     onMounted(() => {
         renderer.value = document.querySelector('.fractalRenderer') as HTMLCanvasElement;
-
-        renderFractal();
-
         emitter.on('fractal:save', saveFractal);
+        renderFractal();
 
         // TODO: replace this by watching global styles
         emitter.on('fractal:style', styleFractal);
     });
 
+    useEventListener(window, 'resize', renderFractal);
     watchScoped(state, renderFractal, {
         ignore: opts.ignore
     });
-
-    useEventListener(window, 'resize', renderFractal);
 
     return { state };
 }
