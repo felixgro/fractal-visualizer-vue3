@@ -2,8 +2,8 @@ import * as FRCTL from '@/types/fractal';
 import { reactive } from 'vue';
 
 const state = reactive({
-    width: 4000,
-    height: 4000,
+    width: 7000,
+    height: 7000,
     format: 'image/png'
 });
 
