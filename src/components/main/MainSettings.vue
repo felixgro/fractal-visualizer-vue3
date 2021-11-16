@@ -26,7 +26,6 @@ onUnmounted(() => {
 
 watch(styles, (newStyles) => {
 	emitter.emit('fractal:style', newStyles);
-	emitter.emit('fractal:render');
 });
 
 const emitSaveEvent = () => {

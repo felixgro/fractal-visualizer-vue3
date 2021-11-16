@@ -12,15 +12,13 @@ export const defineFractal = <State>(handler: FRCTL.DrawHandler<State>) => handl
 
 const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): FRCTL.Return<State> => {
     const state = reactive<State>(opts.state);
+    const renderer = ref<HTMLCanvasElement>();
+
+    // TODO: store in global state along with image type and dimensions for export
     const styles = reactive<FRCTL.Styles>({
         bg: '#ffffff',
         fg: '#000000',
         lw: .5
-    });
-
-    const renderer = ref<HTMLCanvasElement>();
-    const pen = computed<Pen | null>(() => {
-        return renderer.value ? new Pen(renderer.value) : null;
     });
 
     const emitter = useEmitter();
@@ -33,22 +31,24 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
     });
 
     const renderFractal = () => {
-        if (!renderer.value || !pen.value)
-            throw new Error(`Cannot find canvas element or it's rendering context`);
+        if (!renderer.value) throw new Error(`Cannot find canvas element for rendering fractal`);
 
-        pen.value.clear()
+        const pen = new Pen(renderer.value)
+            .clear()
             .setBackground(styles.bg)
-            .setFillStyle(styles.fg)
             .setStrokeStyle(styles.fg)
+            .setFillStyle(styles.fg)
             .setLineWidth(styles.lw);
 
-        opts.drawHandler.call({}, pen.value, state);
+        opts.drawHandler.call({}, pen, state);
     }
 
     const styleFractal = (s: FRCTL.Styles) => {
         styles.bg = s.bg;
         styles.fg = s.fg;
         styles.lw = s.lw;
+
+        renderFractal();
     }
 
     const saveFractal = () => {
