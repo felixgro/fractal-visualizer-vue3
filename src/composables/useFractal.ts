@@ -35,6 +35,8 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
     const renderFractal = () => {
         if (!renderer.value) throw new Error(`Cannot find canvas element for rendering fractal`);
 
+        // TODO: add static initizliation method to pen to dynamically
+        // set the pen styles here as well as in worker thread
         const pen = new Pen(renderer.value)
             .clear()
             .setBackground(styles.bg)
@@ -55,7 +57,7 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
     }
 
     const saveFractal = () => {
-        // TODO: check for browser support
+        // TODO: check for browser support and use styles and dimensions from global store
         const imageData: FRCTL.ExportMessage<State> = {
             fractal: 'hfractal',
             state: { ...state },
@@ -72,9 +74,10 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
 
         renderFractal();
 
-        // TODO: remove me!
-        emitter.on('fractal:style', styleFractal);
         emitter.on('fractal:save', saveFractal);
+
+        // TODO: replace this by watching global styles
+        emitter.on('fractal:style', styleFractal);
     });
 
     watchScoped(state, renderFractal, {
