@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import type { FractalStyles } from '@/composables/useFractal';
+import type * as FRCTL from '@/types/fractal';
 import { ref, reactive, watch, onMounted, onUnmounted } from 'vue';
 import useEmitter from '@/composables/useEmitter';
-import TempCover from '@/components/DimensionIndicator.vue';
 import * as Form from '@/components/form';
 
 const show = ref(true);
 const emitter = useEmitter();
-const styles = reactive<FractalStyles>({
+const styles = reactive<FRCTL.Styles>({
 	bg: '#ffffff',
 	fg: '#000000',
 	lw: 0.5,
@@ -47,7 +46,5 @@ const emitSaveEvent = () => {
 		<Form.Number label="LW" v-model="styles.lw" :step="0.1" />
 
 		<RouterView />
-
-		<TempCover />
 	</form>
 </template>

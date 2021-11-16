@@ -1,4 +1,4 @@
-import type { SaveImageMessage } from '@/composables/useFractal';
+import type * as FRCTL from '@/types/fractal';
 import { getFileName } from '@/utils/file';
 import { throwIf } from '@/utils/error';
 import Pen from '@/libs/Pen';
@@ -20,7 +20,7 @@ const getAlgorithms = () => {
 }
 
 // Start image processing when SaveImageMessage is received
-self.onmessage = async ({ data }: MessageEvent<SaveImageMessage>) => {
+self.onmessage = async ({ data }: MessageEvent<FRCTL.ExportMessage<FRCTL.BaseState>>) => {
     // offscreen canvas for image generation
     const offscreenCanvas = new OffscreenCanvas(data.dimensions[0], data.dimensions[1]);
 
@@ -45,11 +45,18 @@ self.onmessage = async ({ data }: MessageEvent<SaveImageMessage>) => {
     drawHandler.call({}, pen, data.state);
 
     // convert current offscreen canvas image to blob with requested format
-    const imageBlob = await offscreenCanvas.convertToBlob({
-        type: `image/${data.format}`,
+    const blob = await offscreenCanvas.convertToBlob({
+        type: data.format,
         quality: 1
     });
 
+    const fileName = `${data.fractal}.${data.format}`;
+
+    const saveMessage: FRCTL.SaveMessage = {
+        blob,
+        fileName,
+    }
+
     // return the generated blob to the main thread
-    self.postMessage(imageBlob);
+    self.postMessage(saveMessage);
 }

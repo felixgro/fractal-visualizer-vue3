@@ -1,58 +1,35 @@
+import type * as FRCTL from '@/types/fractal';
 import { ref, reactive, computed, onMounted } from 'vue';
 import ImageWorker from '@/core/ImageWorker?worker';
 import useEmitter from '@/composables/useEmitter';
-import useScopedWatch from '@/composables/useScopedWatch';
-import Pen from '@/libs/Pen';
+import useWorker from '@/composables/useWorker';
 import { downloadBlob } from '@/utils/file';
+import { watchScoped } from '@/utils/vue';
+import Pen from '@/libs/Pen';
 
-type BaseObject = { [key: string]: any };
+// used for defining a draw handler in each src/core/alogrithms/*.ts file.
+export const defineFractal = <State>(handler: FRCTL.DrawHandler<State>) => handler;
 
-type DrawHandler<ConfigType> = (pen: Pen, config: ConfigType, utils?: any) => void;
-
-export interface FractalOptions<ConfigType> {
-    state: ConfigType,
-    ignore?: (keyof ConfigType)[];
-    drawHandler: DrawHandler<ConfigType>
-}
-
-export interface FractalStyles {
-    bg: string;
-    fg: string;
-    lw: number;
-}
-
-export interface FractalReturn<ConfigType> {
-    state: ConfigType
-}
-
-export interface SaveImageMessage {
-    fractal: string,
-    format: string;
-    styles: FractalStyles,
-    dimensions: [number, number],
-    state: { [key: string]: any },
-}
-
-
-// used for type hints when defining a draw handler in seperate file.
-export const defineFractal = <ConfigType>(handler: DrawHandler<ConfigType>) => handler;
-
-const useFractal = <FC extends BaseObject>(opts: FractalOptions<FC>): FractalReturn<FC> => {
-    // reactive objects for storing current fractal state
-    const state = reactive<FC>(opts.state);
-    const styles = reactive<FractalStyles>({
+const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): FRCTL.Return<State> => {
+    const state = reactive<State>(opts.state);
+    const styles = reactive<FRCTL.Styles>({
         bg: '#ffffff',
         fg: '#000000',
         lw: .5
     });
 
-    // used to listen for style change or rerender events
-    const emitter = useEmitter();
-
-    // store canvas element and it's rendering context
     const renderer = ref<HTMLCanvasElement>();
     const pen = computed<Pen | null>(() => {
-        return renderer.value ? new Pen(renderer.value.getContext('2d')!) : null;
+        return renderer.value ? new Pen(renderer.value) : null;
+    });
+
+    const emitter = useEmitter();
+    const imageWorker = useWorker(ImageWorker, {
+        terminateAfter: 15000 // terminate worker after 15 seconds of inactivity
+    });
+
+    imageWorker.on<FRCTL.SaveMessage>(({ data: image }) => {
+        downloadBlob(image.blob, image.fileName);
     });
 
     const renderFractal = () => {
@@ -68,30 +45,22 @@ const useFractal = <FC extends BaseObject>(opts: FractalOptions<FC>): FractalRet
         opts.drawHandler.call({}, pen.value, state);
     }
 
-    const styleFractal = (s: FractalStyles) => {
+    const styleFractal = (s: FRCTL.Styles) => {
         styles.bg = s.bg;
         styles.fg = s.fg;
         styles.lw = s.lw;
     }
 
     const saveFractal = () => {
-        const qualityFractor = 3;
-        const imageData: SaveImageMessage = {
+        const imageData: FRCTL.ExportMessage<State> = {
             fractal: 'hfractal',
-            styles: { ...styles },
             state: { ...state },
-            dimensions: [828 * qualityFractor, 1792 * qualityFractor],
-            format: 'png',
+            styles: { ...styles },
+            dimensions: [3000, 3000],
+            format: 'image/png',
         };
 
-        const worker = new ImageWorker();
-
-        worker.onmessage = (e: MessageEvent<Blob>) => {
-            downloadBlob(e.data, 'iPhone_Wallpaper.png');
-            worker.terminate();
-        };
-
-        worker.postMessage(imageData);
+        imageWorker.post(imageData);
     };
 
     onMounted(() => {
@@ -104,7 +73,7 @@ const useFractal = <FC extends BaseObject>(opts: FractalOptions<FC>): FractalRet
         });
     });
 
-    useScopedWatch(state, renderFractal, {
+    watchScoped(state, renderFractal, {
         ignore: opts.ignore
     });
 
