@@ -1,16 +1,25 @@
+import * as FRCTL from '@/types/fractal';
 import { reactive } from 'vue';
 
 const state = reactive({
-    width: 100,
-    height: 100,
+    width: 4000,
+    height: 4000,
     format: 'image/png'
 });
 
-const methods = {
-    setDimensions(width: number, height: number) {
-        state.width = width;
-        state.height = height;
-    }
-};
+const styles = reactive<FRCTL.Styles>({
+    bg: '#ffffff',
+    fg: '#000000',
+    lw: .5,
+});
 
-export default { state, methods };
+const getters = {
+    dimensions: () => [state.width, state.height],
+    format: () => state.format,
+}
+
+export default {
+    styles,
+    state,
+    getters
+};

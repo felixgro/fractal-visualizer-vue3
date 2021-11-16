@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as Form from '@/components/form';
-import useFractal from '@/composables/useFractal';
+import useFractal from '@/core/useFractal';
 import drawHandler, { HFractal } from '@/core/algorithms/HFractal';
 import { onMounted } from '@vue/runtime-core';
 

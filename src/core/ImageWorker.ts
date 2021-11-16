@@ -34,11 +34,7 @@ self.onmessage = async ({ data }: MessageEvent<FRCTL.ExportMessage<FRCTL.BaseSta
 
     // instantiate pen for drawing on offscreen canvas
     // and inherit all fractal styles from the main thread
-    const pen = new Pen(offscreenCanvas)
-        .setBackground(data.styles.bg)
-        .setFillStyle(data.styles.fg)
-        .setStrokeStyle(data.styles.fg)
-        .setLineWidth(data.styles.lw);
+    const pen = Pen.fromStyles(offscreenCanvas, data.styles);
 
     // load the default exported function of the algorithm module and
     // execute it using the offset canvas pen
