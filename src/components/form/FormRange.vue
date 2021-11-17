@@ -33,6 +33,7 @@ const emitUpdateEvent = (event: Event) => {
 	emits('update:modelValue', parseFloat(value));
 };
 
+// TODO: exclude logic to composable
 const num = ref<string>('');
 const tid = ref<number | null>(null);
 
@@ -55,8 +56,6 @@ const typing = (e: KeyboardEvent) => {
 		emits('update:modelValue', parseFloat(num.value));
 		num.value = '';
 	}, 1000);
-
-	console.log(num.value);
 };
 </script>
 
@@ -64,7 +63,7 @@ const typing = (e: KeyboardEvent) => {
 	<label :for="id('range')">
 		<span>{{ label }}</span>
 		<div>
-			<small v-if="num">{{ num }}</small>
+			<small v-if="num">({{ num }})</small>
 			{{ modelValue }}
 		</div>
 	</label>

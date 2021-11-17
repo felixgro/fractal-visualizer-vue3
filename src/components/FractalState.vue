@@ -26,7 +26,6 @@ const handleImageExport = () => {};
 		</div>
 		<div class="r">
 			<Form.Color label="BG" v-model="imageState.styles.bg" />
-			<Form.Color label="FG" v-model="imageState.styles.fg" />
 			<Form.Number
 				label="LW"
 				v-model="imageState.styles.lw"
