@@ -1,7 +1,7 @@
 import * as FRCTL from '@/types/fractal';
 import { reactive } from 'vue';
 
-const state = reactive({
+const exportConfig = reactive<FRCTL.ExportConfig>({
     width: 7000,
     height: 7000,
     format: 'image/png'
@@ -10,16 +10,17 @@ const state = reactive({
 const styles = reactive<FRCTL.Styles>({
     bg: '#ffffff',
     fg: '#000000',
-    lw: .5,
+    lw: .3,
 });
 
 const getters = {
-    dimensions: () => [state.width, state.height],
-    format: () => state.format,
+    dimensions: () => [exportConfig.width, exportConfig.height],
+    styles: () => { return { ...styles } },
+    format: () => exportConfig.format,
 }
 
 export default {
     styles,
-    state,
+    exportConfig,
     getters
 };

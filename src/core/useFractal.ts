@@ -22,6 +22,10 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
         terminateAfter: 15000 // terminate worker after 15 seconds of inactivity
     });
 
+    imageWorker.on<FRCTL.SaveMessage>(({ data: image }) => {
+        downloadBlob(image.blob, image.fileName);
+    });
+
     const renderFractal = () => {
         if (!renderer.value)
             throw new Error(`Cannot find canvas element for rendering fractal`);
@@ -34,17 +38,13 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
         const imageData: FRCTL.ExportMessage<State> = {
             fractal: 'hfractal',
             state: { ...state },
-            styles: { ...imageState.styles },
             dimensions: imageState.getters.dimensions(),
+            styles: imageState.getters.styles(),
             format: imageState.getters.format(),
         };
 
         imageWorker.post(imageData);
     };
-
-    imageWorker.on<FRCTL.SaveMessage>(({ data: image }) => {
-        downloadBlob(image.blob, image.fileName);
-    });
 
     onMounted(() => {
         renderer.value = document.querySelector('.fractalRenderer') as HTMLCanvasElement;

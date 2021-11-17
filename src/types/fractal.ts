@@ -20,6 +20,12 @@ export interface Styles {
     lw: number;
 }
 
+export interface ExportConfig {
+    width: number;
+    height: number;
+    format: string;
+}
+
 export interface ExportMessage<State> {
     fractal: string,
     format: string;
@@ -31,6 +37,12 @@ export interface ExportMessage<State> {
 export interface SaveMessage {
     blob: Blob,
     fileName: string
+}
+
+export interface UseImageState {
+    styles: Styles;
+    exportConfig: ExportConfig;
+    getters: { [key: string]: () => any };
 }
 
 // draw handler type for fractal drawing algorithm

@@ -1,16 +1,10 @@
 import type * as FRCTL from '@/types/fractal';
 import { inject } from 'vue';
 
-// TODO: add better types
-export interface ReturnImageState {
-    styles: FRCTL.Styles;
-    state: any;
-    getters: any;
-}
-
-const useImageState = (): ReturnImageState => {
-    const imageState = inject('state');
-    return imageState as ReturnImageState;
+const useImageState = (): FRCTL.UseImageState => {
+    const imageState = inject<FRCTL.UseImageState>('state');
+    if (!imageState) throw new Error('Cannot find current ImageState');
+    return imageState;
 }
 
 export default useImageState;
