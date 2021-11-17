@@ -58,6 +58,8 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
         ignore: opts.ignore
     });
 
+    watch(imageState.exportConfig, (c) => console.log(c))
+
     return { state };
 }
 

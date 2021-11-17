@@ -12,7 +12,7 @@ provide('state', imageState);
 
 	<main>
 		<!-- Default fractal settings combined with specific fractal controls defined in each fractal's template -->
-		<Main.Settings />
+		<!-- <Main.Settings /> -->
 		<!-- Renders current fractal state on screen -->
 		<Main.Renderer />
 	</main>

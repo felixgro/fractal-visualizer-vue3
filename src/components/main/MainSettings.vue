@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import useEmitter from '@/composables/useEmitter';
+import ExportModal from '@/components/ExportModal.vue';
 import useImageState from '@/composables/useImageState';
 import * as Form from '@/components/form';
 
 const show = ref(true);
-const emitter = useEmitter();
+const showExportConfig = ref(false);
 const imageState = useImageState();
 
 const SpaceBarEvent = (e: KeyboardEvent) => {
@@ -21,7 +21,7 @@ onUnmounted(() => {
 });
 
 const handleImageSave = () => {
-	emitter.emit('fractal:save');
+	showExportConfig.value = true;
 };
 </script>
 
@@ -42,4 +42,5 @@ const handleImageSave = () => {
 
 		<RouterView />
 	</form>
+	<ExportModal v-model="showExportConfig" />
 </template>
