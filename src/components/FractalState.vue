@@ -24,26 +24,34 @@ const handleImageExport = () => {};
 
 			<button @click="handleImageExport">EXP</button>
 		</div>
-		<Form.Color label="BG" v-model="imageState.styles.bg" />
-		<Form.Color label="FG" v-model="imageState.styles.fg" />
-		<Form.Number
-			label="LW"
-			v-model="imageState.styles.lw"
-			:step="0.1"
-		/>
+		<div class="r">
+			<Form.Color label="BG" v-model="imageState.styles.bg" />
+			<Form.Color label="FG" v-model="imageState.styles.fg" />
+			<Form.Number
+				label="LW"
+				v-model="imageState.styles.lw"
+				:step="0.1"
+			/>
 
-		<RouterView />
+			<RouterView />
+		</div>
 	</form>
 </template>
 
 <style scoped>
 form {
 	width: 250px;
+	max-height: 560px;
+	overflow-y: scroll;
 	border: 1px solid #ccc;
 	background: #eee;
 }
 .fr {
 	display: flex;
+	position: sticky;
+	top: 0;
+	background: #eee;
+	padding: 12px;
 	gap: 2px;
 }
 
@@ -51,6 +59,11 @@ form {
 .fr button {
 	height: 30px;
 	width: auto;
+}
+
+.r {
+	padding: 12px;
+	padding-top: 0;
 }
 
 .ci input {

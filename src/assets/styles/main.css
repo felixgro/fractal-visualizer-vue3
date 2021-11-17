@@ -1,4 +1,5 @@
 @import './reset';
+@import './slider';
 
 #app {
 	font-family: Avenir, Helvetica, Arial, sans-serif;
