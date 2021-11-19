@@ -10,8 +10,9 @@ const { exportConfig } = useImageState();
 
 watchEffect(() => {
 	if (!preview.value) return;
+	exportConfig;
 	const relHeight =
-		(preview.value.height / preview.value.width) *
+		(preview.value.width / preview.value.height) *
 		preview.value.clientWidth;
 	preview.value.style.height = `${relHeight}px`;
 });
