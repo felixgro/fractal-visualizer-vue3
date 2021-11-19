@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import * as Main from '@/components/main';
 import * as Layout from '@/components/layout';
+import ExportModal from '@/components/ExportModal.vue';
 import imageState from '@/core/ImageState';
 import { provide } from 'vue';
 
@@ -11,11 +12,11 @@ provide('state', imageState);
 	<Layout.Header />
 
 	<main>
-		<!-- Default fractal settings combined with specific fractal controls defined in each fractal's template -->
-		<!-- <Main.Settings /> -->
 		<!-- Renders current fractal state on screen -->
 		<Main.Renderer />
 	</main>
+
+	<ExportModal />
 
 	<Layout.Footer />
 </template>

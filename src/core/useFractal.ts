@@ -34,6 +34,10 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
         opts.drawHandler.call({}, pen, state);
     }
 
+    const exportFractal = () => {
+        console.log('hi from export');
+    }
+
     const saveFractal = () => {
         const imageData: FRCTL.ExportMessage<State> = {
             fractal: 'hfractal',
@@ -50,6 +54,7 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
         renderer.value = document.querySelector('.fractalRenderer') as HTMLCanvasElement;
         renderFractal();
         emitter.on('fractal:save', saveFractal);
+        emitter.on('fractal:export', exportFractal);
     });
 
     useEventListener(window, 'resize', renderFractal);

@@ -4,11 +4,15 @@ import FormSvgColor from '@/components/Form/FormSVGColor.vue';
 import ExportModal from '@/components/ExportModal.vue';
 import useImageState from '@/composables/useImageState';
 import FractalColorIcon from '@/components/icons/FractalColorIcon.vue';
+import useEmitter from '@/composables/useEmitter';
 import FractalBackgroundIcon from './icons/FractalBackgroundIcon.vue';
 
 const imageState = useImageState();
+const emitter = useEmitter();
 
-const handleImageExport = () => {};
+const handleImageExport = () => {
+	emitter.emit('fractal:export');
+};
 </script>
 
 <template>

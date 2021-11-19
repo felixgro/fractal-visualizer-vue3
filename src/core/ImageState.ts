@@ -2,8 +2,8 @@ import * as FRCTL from '@/types/fractal';
 import { reactive } from 'vue';
 
 const exportConfig = reactive<FRCTL.ExportConfig>({
-    width: 7000,
-    height: 7000,
+    width: 2000,
+    height: 2000,
     format: 'image/png'
 });
 
