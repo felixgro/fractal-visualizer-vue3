@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted } from '@vue/runtime-core';
+import { throwIf } from '@/utils/error';
 import useUid from '@/composables/useUid';
 
 const props = defineProps<{
@@ -24,9 +25,9 @@ onMounted(() => {
 		`label[for='${id('color')}'] svg`
 	);
 
-	if (!svgElement) throw new Error('Cannot find svg element');
+	throwIf(!svgElement, 'SVG element not found');
 
-	colorables.value = svgElement.querySelectorAll(
+	colorables.value = svgElement!.querySelectorAll(
 		props.colorSelector
 	);
 

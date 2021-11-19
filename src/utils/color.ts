@@ -1,3 +1,5 @@
+import { throwIf } from '@/utils/error';
+
 interface RGB {
     r: number;
     g: number;
@@ -7,12 +9,12 @@ interface RGB {
 // convert any hex string to rgb object
 export const hexToRgb = (hex: string): RGB => {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    if (!result) throw new Error(`Cannot convert hex '${hex}' to rgb`);
+    throwIf(!result, `Invalid hex color: ${hex}`);
 
     return {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
+        r: parseInt(result![1], 16),
+        g: parseInt(result![2], 16),
+        b: parseInt(result![3], 16)
     };
 }
 

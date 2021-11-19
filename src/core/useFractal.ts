@@ -7,6 +7,7 @@ import useEmitter from '@/composables/useEmitter';
 import useWorker from '@/composables/useWorker';
 import { downloadBlob } from '@/utils/file';
 import { watchScoped } from '@/utils/vue';
+import { throwIf } from '@/utils/error';
 import Pen from '@/libs/Pen';
 
 // used for defining a draw handler in each src/core/alogrithms/*.ts file.
@@ -27,10 +28,9 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
     });
 
     const renderFractal = () => {
-        if (!renderer.value)
-            throw new Error(`Cannot find canvas element for rendering fractal`);
+        throwIf(!renderer.value, 'Cannot find canvas element for rendering fractal');
 
-        const pen = Pen.fromStyles(renderer.value, imageState.styles);
+        const pen = Pen.fromStyles(renderer.value!, imageState.styles);
         opts.drawHandler.call({}, pen, state);
     }
 
