@@ -1,0 +1,15 @@
+{
+	"iPhone XR": [828, 1792],
+	"iPhone XS": [1125, 2436],
+	"iPhone XS Max": [1242, 2688],
+	"iPhone X": [1125, 2436],
+	"iPhone 11": [828, 1792],
+	"iPhone 12 Mini": [1080, 2340],
+	"iPhone 12": [1170, 2532],
+	"iPad Pro": [2048, 2732],
+	"iPad 3rd/4th Generation": [1536, 2048],
+	"Nexus 6P": [1440, 2560],
+	"Google Pixel 3 XL": [1440, 2960],
+	"Google Pixel 3": [1080, 2160],
+	"Samsung Note 10": [1080, 2280]
+}
