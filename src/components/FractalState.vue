@@ -2,16 +2,17 @@
 import * as Form from '@/components/form';
 import FormSvgColor from '@/components/Form/FormSVGColor.vue';
 import ExportModal from '@/components/ExportModal.vue';
-import useImageState from '@/composables/useImageState';
 import FractalColorIcon from '@/components/icons/FractalColorIcon.vue';
 import useEmitter from '@/composables/useEmitter';
-import FractalBackgroundIcon from './icons/FractalBackgroundIcon.vue';
+import { useStore } from '@/stores/fractal';
+import { ref } from 'vue';
 
-const imageState = useImageState();
+const showExportModal = ref(false);
+const store = useStore();
 const emitter = useEmitter();
 
 const handleImageExport = () => {
-	emitter.emit('fractal:export');
+	showExportModal.value = !showExportModal.value;
 };
 </script>
 
@@ -20,7 +21,7 @@ const handleImageExport = () => {
 		<div class="fr">
 			<FormSvgColor
 				label="FG"
-				v-model="imageState.styles.fg"
+				v-model="store.fg"
 				colorSelector="rect"
 			>
 				<FractalColorIcon />
@@ -29,16 +30,17 @@ const handleImageExport = () => {
 			<button @click="handleImageExport">EXP</button>
 		</div>
 		<div class="r">
-			<Form.Color label="BG" v-model="imageState.styles.bg" />
-			<Form.Number
-				label="LW"
-				v-model="imageState.styles.lw"
-				:step="0.1"
-			/>
+			<Form.Color label="BG" v-model="store.bg" />
+			<Form.Number label="LW" v-model="store.lw" :step="0.1" />
 
 			<RouterView />
 		</div>
 	</form>
+
+	<ExportModal
+		v-show="showExportModal"
+		:aria-hidden="!showExportModal"
+	/>
 </template>
 
 <style scoped>

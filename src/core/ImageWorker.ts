@@ -17,26 +17,25 @@ const getAlgorithms = () => {
 }
 
 self.onmessage = async ({ data }: MessageEvent<FRCTL.ExportMessage<FRCTL.BaseState>>) => {
-    console.log('requesting worker job');
-    const offscreenCanvas = new OffscreenCanvas(data.dimensions[0], data.dimensions[1]);
-
+    const offscreenCanvas = new OffscreenCanvas(data.config.width, data.config.height);
     const algorithm = getAlgorithms().find(({ name }) => {
         return name.toLowerCase() === data.fractal.toLowerCase()
     })!;
     throwIf(!algorithm, `Cannot find algorithm for '${data.fractal}'`);
 
 
-    const pen = Pen.fromStyles(offscreenCanvas, data.styles);
+    const pen = Pen.fromStyles(offscreenCanvas, { lw: data.config.lw, bg: data.config.bg, fg: data.config.fg });
     const drawHandler = (await algorithm.module()).default;
     drawHandler.call({}, pen, data.state);
 
     const blob = await offscreenCanvas.convertToBlob({
-        type: data.format,
+        type: data.config.format,
         quality: 1
     });
 
     const saveMessage: FRCTL.SaveMessage = {
-        fileName: `${data.fractal}.${data.format.split('/')[1]}`,
+        fileName: `${data.fractal}.${data.config.format.split('/')[1]}`,
+        isPreview: data.isPreview,
         blob
     }
 

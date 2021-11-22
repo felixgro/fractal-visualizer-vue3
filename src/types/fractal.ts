@@ -28,14 +28,14 @@ export interface ExportConfig {
 
 export interface ExportMessage<State> {
     fractal: string,
-    format: string;
-    styles: Styles,
     state: State,
-    dimensions: [number, number],
+    isPreview: boolean,
+    config: any,
 }
 
 export interface SaveMessage {
     blob: Blob,
+    isPreview: boolean,
     fileName: string
 }
 

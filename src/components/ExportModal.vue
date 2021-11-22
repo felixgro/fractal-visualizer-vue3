@@ -1,54 +1,53 @@
 <script lang="ts" setup>
-import { ref, watchEffect } from '@vue/runtime-core';
+import { ref, onUpdated } from '@vue/runtime-core';
 import * as Form from '@/components/form';
-import useImageState from '@/composables/useImageState';
 import useEmitter from '@/composables/useEmitter';
+import { useStore } from '@/stores/fractal';
 
-const preview = ref<HTMLCanvasElement>();
+// FIXME: Triggers on every change even when hiding modal
+// onUpdated(() => {
+// 	emitter.emit('fractal:preview');
+// });
+
+const preview = ref<HTMLImageElement>();
 const emitter = useEmitter();
-const { exportConfig } = useImageState();
+const store = useStore();
 
-watchEffect(() => {
-	if (!preview.value) return;
-	exportConfig;
-	const relHeight =
-		(preview.value.width / preview.value.height) *
-		preview.value.clientWidth;
-	preview.value.style.height = `${relHeight}px`;
+const saveFractal = () => emitter.emit('fractal:save');
+
+emitter.on('fractal:previewBlob', (blob: Blob) => {
+	preview.value!.src = URL.createObjectURL(blob);
+	preview.value!.onload = () => {
+		const conBcr = preview.value!.parentElement!.getBoundingClientRect();
+		const imgBcr = preview.value!.getBoundingClientRect();
+
+		if (imgBcr.height > imgBcr.width) {
+			preview.value!.style.height = '100%';
+			preview.value!.style.width = 'auto';
+		} else {
+			preview.value!.style.width = '100%';
+			preview.value!.style.height = 'auto';
+		}
+
+		console.log(imgBcr);
+		console.log(conBcr);
+	};
 });
-
-emitter.on('fractal:preview', (img: Blob) => {
-	console.log(img);
-});
-
-const submitFractalExport = () => {
-	emitter.emit('fractal:save');
-};
 </script>
 
 <template>
 	<div class="modal">
 		<h1>Export Config</h1>
 		<div class="preview">
-			<canvas
-				ref="preview"
-				:width="exportConfig.width"
-				:height="exportConfig.height"
-			></canvas>
+			<img ref="preview" />
 		</div>
 		<p>v Custom</p>
 		<div class="row">
-			<Form.Number label="Width" v-model="exportConfig.width" />
-			<Form.Number
-				label="Height"
-				v-model="exportConfig.height"
-			/>
-			<Form.Text label="Format" v-model="exportConfig.format" />
+			<Form.Number label="Width" v-model="store.width" />
+			<Form.Number label="Height" v-model="store.height" />
+			<Form.Text label="Format" v-model="store.format" />
 		</div>
-		<Form.Button
-			label="Download"
-			v-on:click="submitFractalExport"
-		/>
+		<Form.Button label="Download" v-on:click="saveFractal" />
 	</div>
 </template>
 
@@ -59,6 +58,7 @@ div.modal {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+	width: 450px;
 	background: #ccc;
 	padding: 20px;
 }
@@ -74,15 +74,14 @@ button {
 
 .preview {
 	position: relative;
-	display: block;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	width: 100%;
+	height: 200px;
+	padding: 10px;
+	background: #bbb;
 	margin: 15px 0;
-}
-
-canvas {
-	position: relative;
-	background: red;
-	width: 100%;
-	height: 100%;
+	overflow: hidden;
 }
 </style>
