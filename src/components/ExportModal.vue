@@ -1,13 +1,10 @@
 <script lang="ts" setup>
-import { ref, onUpdated } from '@vue/runtime-core';
+import { ref } from '@vue/runtime-core';
 import * as Form from '@/components/form';
 import useEmitter from '@/composables/useEmitter';
 import { useStore } from '@/stores/fractal';
 
-// FIXME: Triggers on every change even when hiding modal
-// onUpdated(() => {
-// 	emitter.emit('fractal:preview');
-// });
+const TRIGGER_PREVIEW = ['width', 'height', 'format'];
 
 const preview = ref<HTMLImageElement>();
 const emitter = useEmitter();
@@ -16,22 +13,24 @@ const store = useStore();
 const saveFractal = () => emitter.emit('fractal:save');
 
 emitter.on('fractal:previewBlob', (blob: Blob) => {
-	preview.value!.src = URL.createObjectURL(blob);
 	preview.value!.onload = () => {
 		const conBcr = preview.value!.parentElement!.getBoundingClientRect();
 		const imgBcr = preview.value!.getBoundingClientRect();
 
-		if (imgBcr.height > imgBcr.width) {
+		if (imgBcr.height > conBcr.height) {
 			preview.value!.style.height = '100%';
 			preview.value!.style.width = 'auto';
-		} else {
+		} else if (imgBcr.width > conBcr.width) {
 			preview.value!.style.width = '100%';
 			preview.value!.style.height = 'auto';
 		}
-
-		console.log(imgBcr);
-		console.log(conBcr);
 	};
+
+	preview.value!.src = URL.createObjectURL(blob);
+});
+
+store.$subscribe(() => {
+	emitter.emit('fractal:preview');
 });
 </script>
 
@@ -43,8 +42,16 @@ emitter.on('fractal:previewBlob', (blob: Blob) => {
 		</div>
 		<p>v Custom</p>
 		<div class="row">
-			<Form.Number label="Width" v-model="store.width" />
-			<Form.Number label="Height" v-model="store.height" />
+			<Form.Number
+				label="Width"
+				:max="10000"
+				v-model="store.width"
+			/>
+			<Form.Number
+				label="Height"
+				:max="10000"
+				v-model="store.height"
+			/>
 			<Form.Text label="Format" v-model="store.format" />
 		</div>
 		<Form.Button label="Download" v-on:click="saveFractal" />

@@ -13,6 +13,7 @@ const emitter = useEmitter();
 
 const handleImageExport = () => {
 	showExportModal.value = !showExportModal.value;
+	if (showExportModal.value) emitter.emit('fractal:preview');
 };
 </script>
 
