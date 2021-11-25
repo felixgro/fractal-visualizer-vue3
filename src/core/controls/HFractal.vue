@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onMounted } from '@vue/runtime-core';
 import * as Form from '@/components/form';
-import useFractal from '@/core/useFractal';
+import useFractal from '@/composables/useFractal';
 import drawHandler, { HFractal } from '@/core/algorithms/HFractal';
 
 const { state } = useFractal<HFractal>({

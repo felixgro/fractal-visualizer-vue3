@@ -1,10 +1,6 @@
 <script lang="ts" setup>
 import * as Main from '@/components/main';
 import * as Layout from '@/components/layout';
-import imageState from '@/core/ImageState';
-import { provide } from 'vue';
-
-provide('state', imageState);
 </script>
 
 <template>

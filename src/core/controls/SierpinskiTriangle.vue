@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as Form from '@/components/form';
-import useFractal from '@/core/useFractal';
+import useFractal from '@/composables/useFractal';
 import drawHandler, {
 	SierpinskiTriangle,
 } from '@/core/algorithms/SierpinskiTriangle';

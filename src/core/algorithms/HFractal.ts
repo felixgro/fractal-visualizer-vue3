@@ -1,4 +1,4 @@
-import { defineFractal } from '@/core/useFractal'
+import { defineFractal } from '@/composables/useFractal'
 import { createGradient } from '@/utils/color';
 import Prng from '@/libs/Prng';
 import Vec2 from '@/libs/Vec2';

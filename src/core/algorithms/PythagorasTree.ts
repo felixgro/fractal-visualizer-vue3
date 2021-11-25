@@ -1,4 +1,4 @@
-import { defineFractal } from '@/core/useFractal'
+import { defineFractal } from '@/composables/useFractal'
 
 export interface PyTree {
     step: number;
