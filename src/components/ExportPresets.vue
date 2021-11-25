@@ -1,10 +1,8 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
-import useUid from '@/composables/useUid';
 import dimensions from '@/assets/data/device-dimensions.json';
-import { useExportStore } from '@/stores/export';
+import useUid from '@/composables/useUid';
+import { ref } from 'vue';
 
-const exportStore = useExportStore();
 const emits = defineEmits(['update']);
 const { id } = useUid();
 const value = ref('custom');
@@ -21,11 +19,7 @@ const emitChangeEvent = () => {
 	emits('update', value.value);
 };
 
-// exportStore.$subscribe((s) => {
-// 	console.log(s);
-// 	if (value.value === 'custom') return;
-// 	value.value = 'custom';
-// });
+// TODO: change to custom if client changes dimensions manually
 </script>
 
 <template>

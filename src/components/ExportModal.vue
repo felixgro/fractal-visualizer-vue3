@@ -52,12 +52,13 @@ exportStore.$subscribe(() => {
 onMounted(() => {
 	throwIf(!previewImage.value, 'Cannot find PreviewImage Element');
 	previewImage.value!.onload = () => {
-		console.log('onload');
 		const conBcr = previewImage.value!.parentElement!.getBoundingClientRect();
 		const imgBcr = previewImage.value!.getBoundingClientRect();
 
-		// TODO: better dimension handling to always stay within conBCR's dimenisons
-		if (imgBcr.height >= imgBcr.width) {
+		if (
+			imgBcr.height >= conBcr.height ||
+			imgBcr.height >= imgBcr.width
+		) {
 			previewImage.value!.style.height = '100%';
 			previewImage.value!.style.width = 'auto';
 		} else {

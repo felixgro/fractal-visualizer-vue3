@@ -44,30 +44,6 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
     useEventListener(window, 'resize', renderFractal);
 
     return { state: fractalState.$state };
-
-    // const generateImage = (isPreview: boolean) => {
-    //     const imageData: FRCTL.ExportMessage<State> = {
-    //         fractal: 'hfractal',
-    //         state: { ...state },
-    //         config: { ...store.config },
-    //         isPreview,
-    //     };
-
-    //     imageWorker.post(imageData);
-    // }
-
-    // const imageWorker = useWorker(ImageWorker, {
-    //     terminateAfter: 15000 // terminate worker after 15 seconds of inactivity
-    // });
-
-    // imageWorker.on<FRCTL.SaveMessage>(({ data: image }) => {
-    //     if (image.error) return console.log('oops');
-    //     if (!image.isPreview) {
-    //         return downloadBlob(image.blob, image.fileName);
-    //     }
-
-    //     emitter.emit('fractal:previewBlob', image.blob);
-    // });
 }
 
 export default useFractal;
