@@ -9,6 +9,7 @@ import { watchScoped } from '@/utils/vue';
 import { throwIf } from '@/utils/error';
 import Pen from '@/libs/Pen';
 import { useStore } from '@/stores/fractal';
+import { useState } from '@/stores/state';
 
 // triggers re-rendering when one of those store props changes
 const RENDER_TRIGGERS = ['bg', 'fg', 'lw'];
@@ -17,22 +18,24 @@ const RENDER_TRIGGERS = ['bg', 'fg', 'lw'];
 export const defineFractal = <State>(handler: FRCTL.DrawHandler<State>) => handler;
 
 const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): FRCTL.Return<State> => {
+    const s = useState();
     const state = reactive<State>(opts.state);
     const renderer = ref<HTMLCanvasElement>();
 
     const store = useStore();
     const emitter = useEmitter();
-    const imageWorker = useWorker(ImageWorker, {
-        terminateAfter: 15000 // terminate worker after 15 seconds of inactivity
-    });
+    // const imageWorker = useWorker(ImageWorker, {
+    //     terminateAfter: 15000 // terminate worker after 15 seconds of inactivity
+    // });
 
-    imageWorker.on<FRCTL.SaveMessage>(({ data: image }) => {
-        if (!image.isPreview) {
-            return downloadBlob(image.blob, image.fileName);
-        }
+    // imageWorker.on<FRCTL.SaveMessage>(({ data: image }) => {
+    //     if (image.error) return console.log('oops');
+    //     if (!image.isPreview) {
+    //         return downloadBlob(image.blob, image.fileName);
+    //     }
 
-        emitter.emit('fractal:previewBlob', image.blob);
-    });
+    //     emitter.emit('fractal:previewBlob', image.blob);
+    // });
 
     const renderFractal = () => {
         throwIf(!renderer.value, 'Cannot find canvas element for rendering fractal');
@@ -40,22 +43,23 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
         opts.drawHandler.call({}, pen, state);
     }
 
-    const generateImage = (isPreview: boolean) => {
-        const imageData: FRCTL.ExportMessage<State> = {
-            fractal: 'hfractal',
-            state: { ...state },
-            config: { ...store.config },
-            isPreview,
-        };
+    // const generateImage = (isPreview: boolean) => {
+    //     const imageData: FRCTL.ExportMessage<State> = {
+    //         fractal: 'hfractal',
+    //         state: { ...state },
+    //         config: { ...store.config },
+    //         isPreview,
+    //     };
 
-        imageWorker.post(imageData);
-    }
+    //     imageWorker.post(imageData);
+    // }
 
     onMounted(() => {
         renderer.value = document.querySelector('.fractalRenderer') as HTMLCanvasElement;
+        s.$state = state;
         renderFractal();
-        emitter.on('fractal:save', () => generateImage(false));
-        emitter.on('fractal:preview', () => generateImage(true));
+        // emitter.on('fractal:save', () => generateImage(false));
+        // emitter.on('fractal:preview', () => generateImage(true));
     });
 
     store.$subscribe((mut) => {

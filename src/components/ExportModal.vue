@@ -1,18 +1,27 @@
 <script lang="ts" setup>
-import { ref } from '@vue/runtime-core';
+import type * as FRCTL from '@/types/fractal';
 import * as Form from '@/components/form';
+import { ref, onMounted } from '@vue/runtime-core';
+import ImageWorker from '@/core/imageWorker?worker';
 import useEmitter from '@/composables/useEmitter';
+import useWorker from '@/composables/useWorker';
 import { useStore } from '@/stores/fractal';
-
-const TRIGGER_PREVIEW = ['width', 'height', 'format'];
+import { useState } from '@/stores/state';
 
 const preview = ref<HTMLImageElement>();
 const emitter = useEmitter();
 const store = useStore();
+const state = useState();
+const worker = useWorker(ImageWorker, {
+	terminateAfter: 15000,
+});
 
-const saveFractal = () => emitter.emit('fractal:save');
+worker.on<FRCTL.SaveMessage>(({ data: image }) => {
+	if (image.error) return console.log('oops');
+	preview.value!.src = URL.createObjectURL(image.blob);
+});
 
-emitter.on('fractal:previewBlob', (blob: Blob) => {
+onMounted(() => {
 	preview.value!.onload = () => {
 		const conBcr = preview.value!.parentElement!.getBoundingClientRect();
 		const imgBcr = preview.value!.getBoundingClientRect();
@@ -26,8 +35,35 @@ emitter.on('fractal:previewBlob', (blob: Blob) => {
 		}
 	};
 
-	preview.value!.src = URL.createObjectURL(blob);
+	console.log(state);
+
+	// const imageData: FRCTL.ExportMessage<any> = {
+	// 	fractal: 'hfractal',
+	// 	state: { ...state },
+	// 	config: { ...store.config },
+	// };
+
+	// worker.post(imageData);
 });
+
+const saveFractal = () => emitter.emit('fractal:save');
+
+// emitter.on('fractal:previewBlob', (blob: Blob) => {
+// 	preview.value!.onload = () => {
+// 		const conBcr = preview.value!.parentElement!.getBoundingClientRect();
+// 		const imgBcr = preview.value!.getBoundingClientRect();
+
+// 		if (imgBcr.height > conBcr.height) {
+// 			preview.value!.style.height = '100%';
+// 			preview.value!.style.width = 'auto';
+// 		} else if (imgBcr.width > conBcr.width) {
+// 			preview.value!.style.width = '100%';
+// 			preview.value!.style.height = 'auto';
+// 		}
+// 	};
+
+// 	preview.value!.src = URL.createObjectURL(blob);
+// });
 
 store.$subscribe(() => {
 	emitter.emit('fractal:preview');

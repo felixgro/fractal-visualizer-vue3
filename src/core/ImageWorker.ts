@@ -17,30 +17,40 @@ const getAlgorithms = () => {
 }
 
 self.onmessage = async ({ data }: MessageEvent<FRCTL.ExportMessage<FRCTL.BaseState>>) => {
-    const offscreenCanvas = new OffscreenCanvas(data.config.width, data.config.height);
-    const algorithm = getAlgorithms().find(({ name }) => {
-        return name.toLowerCase() === data.fractal.toLowerCase()
-    })!;
-    throwIf(!algorithm, `Cannot find algorithm for '${data.fractal}'`);
+    try {
+        const offscreenCanvas = new OffscreenCanvas(data.config.width, data.config.height);
+        const algorithm = getAlgorithms().find(({ name }) => {
+            return name.toLowerCase() === data.fractal.toLowerCase()
+        })!;
+        throwIf(!algorithm, `Cannot find algorithm for '${data.fractal}'`);
 
+        const drawHandler = (await algorithm.module()).default;
+        const pen = Pen.fromStyles(offscreenCanvas, {
+            lw: data.config.lw,
+            bg: data.config.bg,
+            fg: data.config.fg
+        });
 
-    const pen = Pen.fromStyles(offscreenCanvas, { lw: data.config.lw, bg: data.config.bg, fg: data.config.fg });
-    const drawHandler = (await algorithm.module()).default;
-    drawHandler.call({}, pen, data.state);
+        drawHandler.call({}, pen, data.state);
 
-    const blob = await offscreenCanvas.convertToBlob({
-        type: data.config.format,
-        quality: 1
-    });
+        const blob = await offscreenCanvas.convertToBlob({
+            type: data.config.format,
+            quality: 1
+        });
 
-    const saveMessage: FRCTL.SaveMessage = {
-        fileName: `${data.fractal}.${data.config.format.split('/')[1]}`,
-        isPreview: data.isPreview,
-        blob
+        const saveMessage: FRCTL.SaveMessage = {
+            fileName: `${data.fractal}.${data.config.format.split('/')[1]}`,
+            isPreview: false,
+            error: null,
+            blob
+        }
+
+        self.postMessage(saveMessage);
+        console.log('worker job completed');
+        console.log('worker idling');
+    } catch (error) {
+        // native error handlers doesn't work when using async/await in the worker thread
+        // so we need to handle the error manually by passing it to the main thread.
+        self.postMessage({ error });
     }
-
-    // return the generated blob to the main thread
-    self.postMessage(saveMessage);
-    console.log('worker job completed');
-    console.log('worker idling');
 }

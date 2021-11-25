@@ -29,7 +29,6 @@ export interface ExportConfig {
 export interface ExportMessage<State> {
     fractal: string,
     state: State,
-    isPreview: boolean,
     config: any,
 }
 
@@ -37,6 +36,7 @@ export interface SaveMessage {
     blob: Blob,
     isPreview: boolean,
     fileName: string
+    error: any,
 }
 
 export interface UseImageState {

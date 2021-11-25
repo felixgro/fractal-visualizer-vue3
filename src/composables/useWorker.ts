@@ -6,7 +6,7 @@ export interface UseWorkerOptions {
     terminateAfter?: number;
 }
 
-const useWorker = <Data>(WorkerClass: new () => Worker, opts?: UseWorkerOptions) => {
+const useWorker = (WorkerClass: new () => Worker, opts?: UseWorkerOptions) => {
     const worker = ref<Worker | null>(null);
     const timeoutId = ref<number>();
 
@@ -34,15 +34,14 @@ const useWorker = <Data>(WorkerClass: new () => Worker, opts?: UseWorkerOptions)
 
         worker.value = new WorkerClass();
 
-        setTerminateTimeout();
         if (handler.value) worker.value.onmessage = handler.value;
+        setTerminateTimeout();
     }
 
     const post = (msg: any) => {
         if (!worker.value) spawn();
 
         worker.value!.postMessage(msg);
-
         setTerminateTimeout();
     }
 

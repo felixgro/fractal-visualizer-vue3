@@ -38,10 +38,7 @@ const handleImageExport = () => {
 		</div>
 	</form>
 
-	<ExportModal
-		v-show="showExportModal"
-		:aria-hidden="!showExportModal"
-	/>
+	<ExportModal v-if="showExportModal" />
 </template>
 
 <style scoped>
