@@ -13,7 +13,7 @@ const { state } = useFractal<HFractal>({
 		trunkRatio: 0.3,
 		random: false,
 		seed: 40,
-		angleVariation: 0,
+		angleVariation: 30,
 		lengthVariation: 0,
 		gradient: false,
 		fromColor: '#0000ff',
@@ -62,7 +62,8 @@ onMounted(() => {
 		<Form.Range
 			label="Length Variation"
 			v-model="state.lengthVariation"
-			:max="100"
+			:max="1"
+			:step="0.001"
 		/>
 	</Form.ExpandableCheckbox>
 	<Form.ExpandableCheckbox

@@ -21,11 +21,7 @@ export interface HFractal {
 
 
 export default defineFractal<HFractal>((pen, state) => {
-    const random = new Prng();
-
-    pen.setStrokeJoin('round').setStrokeCap('round');
-    state.angle = Vec2.degToRad(state.angleDeg);
-    random.seed = state.seed;
+    const random = new Prng(state.seed, state.random);
 
     const gradient = createGradient({
         active: state.gradient,
@@ -34,34 +30,31 @@ export default defineFractal<HFractal>((pen, state) => {
         to: state.toColor
     });
 
+    pen.setStrokeJoin('round').setStrokeCap('round');
+    state.angle = Vec2.degToRad(state.angleDeg);
+
     // recursive h-fractal function
     const hFractal = (a: Vec2, b: Vec2, limit: number): void => {
         const currentLevel = ((state.step - limit));
         const diff = b.clone().subtract(a);
+        const baseAngle = Vec2.right().angleTo(diff);
+        const baseMag = diff.length * (1 - state.trunkRatio);
 
-        let angle = Vec2.right().angleTo(diff);
-        let branchLength = diff.length * (1 - state.trunkRatio);
-
-        if (state.random) {
-            // TODO: define random branch length and angle for each line individually
-            angle +=
-                random.range(1, true) *
-                Vec2.degToRad(state.angleVariation);
-            branchLength +=
-                random.range(1, true) * state.lengthVariation;
-            if (branchLength < pen.ctx.lineWidth) branchLength = pen.ctx.lineWidth;
-        }
+        const angleA = baseAngle + state.angle + state.angle * random.range(Vec2.degToRad(state.angleVariation), true);
+        const angleB = baseAngle - state.angle + state.angle * random.range(Vec2.degToRad(state.angleVariation), true);
+        const magA = baseMag + baseMag * random.range(state.lengthVariation, true);
+        const magB = baseMag + baseMag * random.range(state.lengthVariation, true);
 
         const pA = diff.multiply(state.trunkRatio).add(a);
 
         const pB = Vec2.right()
-            .rotate(angle + state.angle)
-            .setMagnitude(branchLength)
+            .rotate(angleA)
+            .setMagnitude(magA)
             .add(pA);
 
         const pC = Vec2.right()
-            .rotate(angle - state.angle)
-            .setMagnitude(branchLength)
+            .rotate(angleB)
+            .setMagnitude(magB)
             .add(pA);
 
         pen.line(a.pos, pA.pos).stroke(gradient(currentLevel));
