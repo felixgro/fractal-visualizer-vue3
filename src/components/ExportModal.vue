@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type * as FRCTL from '@/types/fractal';
+import ExportPresets from './ExportPresets.vue';
 import * as Form from '@/components/form';
 import { ref, onMounted } from '@vue/runtime-core';
 import ImageWorker from '@/core/imageWorker?worker';
@@ -55,6 +56,7 @@ onMounted(() => {
 		const conBcr = previewImage.value!.parentElement!.getBoundingClientRect();
 		const imgBcr = previewImage.value!.getBoundingClientRect();
 
+		// TODO: better dimension handling to always stay within conBCR's dimenisons
 		if (imgBcr.height >= imgBcr.width) {
 			previewImage.value!.style.height = '100%';
 			previewImage.value!.style.width = 'auto';
@@ -66,6 +68,12 @@ onMounted(() => {
 
 	generatePreviewImage();
 });
+
+const updateDimensions = (d: [number, number] | 'custom') => {
+	if (d === 'custom') return;
+	exportStore.width = d[0];
+	exportStore.height = d[1];
+};
 </script>
 
 <template>
@@ -74,7 +82,7 @@ onMounted(() => {
 		<div class="preview">
 			<img ref="previewImage" />
 		</div>
-		<p>v Custom</p>
+		<ExportPresets @update="updateDimensions" />
 		<div class="row">
 			<Form.Number
 				label="Width"
