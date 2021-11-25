@@ -19,9 +19,10 @@ export interface HFractal {
     toColor: string;
 }
 
-const random = new Prng();
 
 export default defineFractal<HFractal>((pen, state) => {
+    const random = new Prng();
+
     pen.setStrokeJoin('round').setStrokeCap('round');
     state.angle = Vec2.degToRad(state.angleDeg);
     random.seed = state.seed;

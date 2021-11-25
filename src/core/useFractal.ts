@@ -1,47 +1,49 @@
 import type * as FRCTL from '@/types/fractal';
-import { ref, reactive, onMounted, watch } from 'vue';
-import ImageWorker from '@/core/ImageWorker?worker';
+import { ref, onMounted, onUnmounted } from 'vue';
 import useEventListener from '@/composables/useEventListener';
-import useEmitter from '@/composables/useEmitter';
-import useWorker from '@/composables/useWorker';
-import { downloadBlob } from '@/utils/file';
-import { watchScoped } from '@/utils/vue';
+import { useFractalStore } from '@/stores/fractal';
+import { useStyleStore } from '@/stores/style';
 import { throwIf } from '@/utils/error';
 import Pen from '@/libs/Pen';
-import { useStore } from '@/stores/fractal';
-import { useState } from '@/stores/state';
-
-// triggers re-rendering when one of those store props changes
-const RENDER_TRIGGERS = ['bg', 'fg', 'lw'];
 
 // used for defining a draw handler in each src/core/alogrithms/*.ts file.
+// the defined callback will be executed within a the worker thread.
 export const defineFractal = <State>(handler: FRCTL.DrawHandler<State>) => handler;
 
 const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): FRCTL.Return<State> => {
-    const s = useState();
-    const state = reactive<State>(opts.state);
     const renderer = ref<HTMLCanvasElement>();
+    const fractalState = useFractalStore();
+    const fractalStyles = useStyleStore();
 
-    const store = useStore();
-    const emitter = useEmitter();
-    // const imageWorker = useWorker(ImageWorker, {
-    //     terminateAfter: 15000 // terminate worker after 15 seconds of inactivity
-    // });
-
-    // imageWorker.on<FRCTL.SaveMessage>(({ data: image }) => {
-    //     if (image.error) return console.log('oops');
-    //     if (!image.isPreview) {
-    //         return downloadBlob(image.blob, image.fileName);
-    //     }
-
-    //     emitter.emit('fractal:previewBlob', image.blob);
-    // });
+    fractalState.fresh(opts.state);
 
     const renderFractal = () => {
         throwIf(!renderer.value, 'Cannot find canvas element for rendering fractal');
-        const pen = Pen.fromStyles(renderer.value!, store.styles);
-        opts.drawHandler.call({}, pen, state);
+        const pen = Pen.fromStyles(renderer.value!, fractalStyles);
+        opts.drawHandler.call({}, pen, fractalState.$state as State);
     }
+
+    const storeObserver = [
+        fractalStyles.$subscribe(renderFractal),
+        fractalState.$subscribe((mut) => {
+            if (mut.type === 'patch function' || Array.isArray(mut.events)) return;
+            if (opts.ignore?.includes(mut.events.key)) return;
+            renderFractal();
+        })
+    ]
+
+    onMounted(() => {
+        renderer.value = document.querySelector('.fractalRenderer') as HTMLCanvasElement;
+        renderFractal();
+    });
+
+    onUnmounted(() => {
+        storeObserver.forEach((removeObserver) => removeObserver());
+    });
+
+    useEventListener(window, 'resize', renderFractal);
+
+    return { state: fractalState.$state };
 
     // const generateImage = (isPreview: boolean) => {
     //     const imageData: FRCTL.ExportMessage<State> = {
@@ -54,27 +56,18 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
     //     imageWorker.post(imageData);
     // }
 
-    onMounted(() => {
-        renderer.value = document.querySelector('.fractalRenderer') as HTMLCanvasElement;
-        s.$state = state;
-        renderFractal();
-        // emitter.on('fractal:save', () => generateImage(false));
-        // emitter.on('fractal:preview', () => generateImage(true));
-    });
+    // const imageWorker = useWorker(ImageWorker, {
+    //     terminateAfter: 15000 // terminate worker after 15 seconds of inactivity
+    // });
 
-    store.$subscribe((mut) => {
-        if (!mut.events) return;
-        const evt = Array.isArray(mut.events) ? mut.events[0] : mut.events;
-        if (RENDER_TRIGGERS.includes(evt.key)) renderFractal();
-    });
+    // imageWorker.on<FRCTL.SaveMessage>(({ data: image }) => {
+    //     if (image.error) return console.log('oops');
+    //     if (!image.isPreview) {
+    //         return downloadBlob(image.blob, image.fileName);
+    //     }
 
-    watchScoped(state, renderFractal, {
-        ignore: opts.ignore
-    });
-
-    useEventListener(window, 'resize', renderFractal);
-
-    return { state };
+    //     emitter.emit('fractal:previewBlob', image.blob);
+    // });
 }
 
 export default useFractal;

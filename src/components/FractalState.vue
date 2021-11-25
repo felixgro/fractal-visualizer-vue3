@@ -1,19 +1,16 @@
 <script lang="ts" setup>
+import { ref } from 'vue';
 import * as Form from '@/components/form';
+import FractalColorIcon from '@/components/icons/FractalColorIcon.vue';
 import FormSvgColor from '@/components/Form/FormSVGColor.vue';
 import ExportModal from '@/components/ExportModal.vue';
-import FractalColorIcon from '@/components/icons/FractalColorIcon.vue';
-import useEmitter from '@/composables/useEmitter';
-import { useStore } from '@/stores/fractal';
-import { ref } from 'vue';
+import { useStyleStore } from '@/stores/style';
 
 const showExportModal = ref(false);
-const store = useStore();
-const emitter = useEmitter();
+const styles = useStyleStore();
 
 const handleImageExport = () => {
 	showExportModal.value = !showExportModal.value;
-	if (showExportModal.value) emitter.emit('fractal:preview');
 };
 </script>
 
@@ -22,7 +19,7 @@ const handleImageExport = () => {
 		<div class="fr">
 			<FormSvgColor
 				label="FG"
-				v-model="store.fg"
+				v-model="styles.fg"
 				colorSelector="rect"
 			>
 				<FractalColorIcon />
@@ -31,8 +28,8 @@ const handleImageExport = () => {
 			<button @click="handleImageExport">EXP</button>
 		</div>
 		<div class="r">
-			<Form.Color label="BG" v-model="store.bg" />
-			<Form.Number label="LW" v-model="store.lw" :step="0.1" />
+			<Form.Color label="BG" v-model="styles.bg" />
+			<Form.Number label="LW" v-model="styles.lw" :step="0.1" />
 
 			<RouterView />
 		</div>

@@ -1,23 +1,20 @@
-import { defineStore, acceptHMRUpdate } from 'pinia';
+import { defineStore } from 'pinia';
 
-export const useStore = defineStore('fractal', {
-    state: () => ({
-        bg: '#ffffff',
-        fg: '#000000',
-        lw: 1,
-        width: 700,
-        height: 1000,
-        format: 'image/png'
-    }),
-    getters: {
-        styles: ({ bg, fg, lw }) => ({ bg, fg, lw }),
-        config: ({ width, height, format, bg, fg, lw }) => ({ width, height, format, bg, fg, lw }),
+export const useFractalStore = defineStore('state', {
+    state: () => {
+        return {} as { [key: string]: any }
     },
-    actions: {},
-});
 
-// for vite's hot module replacement:
-// if (import.meta.hot) {
-//     import.meta.hot.accept(acceptHMRUpdate(useStore, import.meta.hot))
-// }
-// FIXME: this leads to an error in the image worker thread because it appends dom code in each algorithm which are getting called in the worker environment
+    actions: {
+        clear() {
+            for (const key of Object.keys(this.$state)) {
+                delete this.$state[key];
+            }
+        },
+
+        fresh(state: { [key: string]: any }) {
+            this.clear();
+            this.$state = state;
+        }
+    }
+});

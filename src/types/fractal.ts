@@ -11,7 +11,7 @@ export interface Options<State> {
 
 // useFractal composable return type
 export interface Return<State> {
-    state: State
+    state: any
 }
 
 export interface Styles {
@@ -26,16 +26,15 @@ export interface ExportConfig {
     format: string;
 }
 
-export interface ExportMessage<State> {
+export interface ExportMessage {
     fractal: string,
-    state: State,
-    config: any,
+    state: BaseState,
+    export: ExportConfig,
+    styles: Styles,
 }
 
 export interface SaveMessage {
     blob: Blob,
-    isPreview: boolean,
-    fileName: string
     error: any,
 }
 

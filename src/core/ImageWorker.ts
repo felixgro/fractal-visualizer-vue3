@@ -16,37 +16,30 @@ const getAlgorithms = () => {
     });
 }
 
-self.onmessage = async ({ data }: MessageEvent<FRCTL.ExportMessage<FRCTL.BaseState>>) => {
+self.onmessage = async ({ data }: MessageEvent<FRCTL.ExportMessage>) => {
     try {
-        const offscreenCanvas = new OffscreenCanvas(data.config.width, data.config.height);
+        const offscreenCanvas = new OffscreenCanvas(data.export.width, data.export.height);
         const algorithm = getAlgorithms().find(({ name }) => {
             return name.toLowerCase() === data.fractal.toLowerCase()
         })!;
         throwIf(!algorithm, `Cannot find algorithm for '${data.fractal}'`);
 
         const drawHandler = (await algorithm.module()).default;
-        const pen = Pen.fromStyles(offscreenCanvas, {
-            lw: data.config.lw,
-            bg: data.config.bg,
-            fg: data.config.fg
-        });
+        const pen = Pen.fromStyles(offscreenCanvas, data.styles);
 
         drawHandler.call({}, pen, data.state);
 
         const blob = await offscreenCanvas.convertToBlob({
-            type: data.config.format,
+            type: data.export.format,
             quality: 1
         });
 
         const saveMessage: FRCTL.SaveMessage = {
-            fileName: `${data.fractal}.${data.config.format.split('/')[1]}`,
-            isPreview: false,
+            blob,
             error: null,
-            blob
         }
 
         self.postMessage(saveMessage);
-        console.log('worker job completed');
         console.log('worker idling');
     } catch (error) {
         // native error handlers doesn't work when using async/await in the worker thread

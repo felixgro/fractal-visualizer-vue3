@@ -3,70 +3,68 @@ import type * as FRCTL from '@/types/fractal';
 import * as Form from '@/components/form';
 import { ref, onMounted } from '@vue/runtime-core';
 import ImageWorker from '@/core/imageWorker?worker';
-import useEmitter from '@/composables/useEmitter';
 import useWorker from '@/composables/useWorker';
-import { useStore } from '@/stores/fractal';
-import { useState } from '@/stores/state';
+import { useFractalStore } from '@/stores/fractal';
+import { useExportStore } from '@/stores/export';
+import { useStyleStore } from '@/stores/style';
+import { throwIf } from '@/utils/error';
+import { downloadBlob } from '@/utils/file';
 
-const preview = ref<HTMLImageElement>();
-const emitter = useEmitter();
-const store = useStore();
-const state = useState();
-const worker = useWorker(ImageWorker, {
+const previewImage = ref<HTMLImageElement>();
+const fractalStore = useFractalStore();
+const styleStore = useStyleStore();
+const exportStore = useExportStore();
+const imageWorker = useWorker(ImageWorker, {
 	terminateAfter: 15000,
 });
 
-worker.on<FRCTL.SaveMessage>(({ data: image }) => {
-	if (image.error) return console.log('oops');
-	preview.value!.src = URL.createObjectURL(image.blob);
+imageWorker.on<FRCTL.SaveMessage>(({ data: image }) => {
+	if (!previewImage.value) return;
+	// TODO: better error handling for worker tasks
+	if (image.error) throw new Error(image.error);
+	previewImage.value!.src = URL.createObjectURL(image.blob);
+});
+
+const generatePreviewImage = () => {
+	const imageData: FRCTL.ExportMessage = {
+		fractal: 'hfractal',
+		state: { ...fractalStore.$state },
+		export: { ...exportStore.$state },
+		styles: { ...styleStore.$state },
+	};
+
+	imageWorker.post(imageData);
+};
+
+const downloadImage = () => {
+	fetch(previewImage.value!.src)
+		.then((res) => res.blob())
+		.then((blob) => {
+			downloadBlob(blob, `fractal.${exportStore.extension}`);
+		});
+};
+
+exportStore.$subscribe(() => {
+	generatePreviewImage();
 });
 
 onMounted(() => {
-	preview.value!.onload = () => {
-		const conBcr = preview.value!.parentElement!.getBoundingClientRect();
-		const imgBcr = preview.value!.getBoundingClientRect();
+	throwIf(!previewImage.value, 'Cannot find PreviewImage Element');
+	previewImage.value!.onload = () => {
+		console.log('onload');
+		const conBcr = previewImage.value!.parentElement!.getBoundingClientRect();
+		const imgBcr = previewImage.value!.getBoundingClientRect();
 
-		if (imgBcr.height > conBcr.height) {
-			preview.value!.style.height = '100%';
-			preview.value!.style.width = 'auto';
-		} else if (imgBcr.width > conBcr.width) {
-			preview.value!.style.width = '100%';
-			preview.value!.style.height = 'auto';
+		if (imgBcr.height >= imgBcr.width) {
+			previewImage.value!.style.height = '100%';
+			previewImage.value!.style.width = 'auto';
+		} else {
+			previewImage.value!.style.width = '100%';
+			previewImage.value!.style.height = 'auto';
 		}
 	};
 
-	console.log(state);
-
-	// const imageData: FRCTL.ExportMessage<any> = {
-	// 	fractal: 'hfractal',
-	// 	state: { ...state },
-	// 	config: { ...store.config },
-	// };
-
-	// worker.post(imageData);
-});
-
-const saveFractal = () => emitter.emit('fractal:save');
-
-// emitter.on('fractal:previewBlob', (blob: Blob) => {
-// 	preview.value!.onload = () => {
-// 		const conBcr = preview.value!.parentElement!.getBoundingClientRect();
-// 		const imgBcr = preview.value!.getBoundingClientRect();
-
-// 		if (imgBcr.height > conBcr.height) {
-// 			preview.value!.style.height = '100%';
-// 			preview.value!.style.width = 'auto';
-// 		} else if (imgBcr.width > conBcr.width) {
-// 			preview.value!.style.width = '100%';
-// 			preview.value!.style.height = 'auto';
-// 		}
-// 	};
-
-// 	preview.value!.src = URL.createObjectURL(blob);
-// });
-
-store.$subscribe(() => {
-	emitter.emit('fractal:preview');
+	generatePreviewImage();
 });
 </script>
 
@@ -74,23 +72,23 @@ store.$subscribe(() => {
 	<div class="modal">
 		<h1>Export Config</h1>
 		<div class="preview">
-			<img ref="preview" />
+			<img ref="previewImage" />
 		</div>
 		<p>v Custom</p>
 		<div class="row">
 			<Form.Number
 				label="Width"
 				:max="10000"
-				v-model="store.width"
+				v-model="exportStore.width"
 			/>
 			<Form.Number
 				label="Height"
 				:max="10000"
-				v-model="store.height"
+				v-model="exportStore.height"
 			/>
-			<Form.Text label="Format" v-model="store.format" />
+			<Form.Text label="Format" v-model="exportStore.format" />
 		</div>
-		<Form.Button label="Download" v-on:click="saveFractal" />
+		<Form.Button label="Download" v-on:click="downloadImage" />
 	</div>
 </template>
 
