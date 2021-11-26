@@ -10,7 +10,7 @@ import Pen from '@/libs/Pen';
 // the defined callback will be executed within a the worker thread.
 export const defineFractal = <State>(handler: FRCTL.DrawHandler<State>) => handler;
 
-const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): FRCTL.Return<State> => {
+export const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): FRCTL.Return<State> => {
     const renderer = ref<HTMLCanvasElement>();
     const fractalState = useFractalStore();
     const fractalStyles = useStyleStore();
@@ -45,5 +45,3 @@ const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): 
 
     return { state: fractalState.$state };
 }
-
-export default useFractal;

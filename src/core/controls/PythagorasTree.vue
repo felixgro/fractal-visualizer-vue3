@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import * as Form from '@/components/form';
-import useFractal from '@/composables/useFractal';
+import * as Input from '@/components/inputs';
+import { useFractal } from '@/composables/useFractal';
 import drawHandler, {
 	PyTree,
 } from '@/core/algorithms/PythagorasTree';
@@ -18,14 +18,14 @@ const { state } = useFractal<PyTree>({
 </script>
 
 <template>
-	<Form.Range label="Step" v-model="state.step" :max="15" />
-	<Form.Range
+	<Input.Range label="Step" v-model="state.step" :max="15" />
+	<Input.Range
 		label="Scale"
 		v-model="state.scale"
 		:max="1"
 		:step="0.01"
 	/>
-	<Form.Range
+	<Input.Range
 		label="Angle"
 		v-model="state.angleDeg"
 		:max="360"
