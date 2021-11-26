@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import useUid from '@/composables/useUid';
+import { useUid } from '@/composables/useUid';
+import { useClickOutside } from '@/composables/useClickOutside';
 
 const props = defineProps<{
 	align: 'left' | 'right';
@@ -17,16 +18,34 @@ const alignStyle = computed(() => {
 		return { right: 0 };
 	}
 });
+
+const btn = ref<HTMLButtonElement>();
+const container = ref<HTMLDivElement>();
+
+useClickOutside(
+	container,
+	(e: Event) => {
+		if (!isOpen) return;
+		e.preventDefault();
+		isOpen.value = false;
+	},
+	{ ignore: [btn] }
+);
 </script>
 
 <template>
 	<div class="toggle-dialog-container">
-		<button v-on:click="isOpen = !isOpen" :id="id('button')">
+		<button
+			v-on:click="isOpen = !isOpen"
+			:id="id('button')"
+			ref="btn"
+		>
 			<slot />
 		</button>
 		<transition name="fade" v-if="stayInDom">
 			<div
 				v-show="isOpen"
+				ref="container"
 				class="toggle-dialog"
 				:style="alignStyle"
 				:aria-hidden="!isOpen"
@@ -38,6 +57,7 @@ const alignStyle = computed(() => {
 		<transition name="fade" v-else>
 			<div
 				v-if="isOpen"
+				ref="container"
 				class="toggle-dialog"
 				:style="alignStyle"
 				:aria-labelledby="id('button')"

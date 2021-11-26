@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import dimensions from '@/assets/data/device-dimensions.json';
-import useUid from '@/composables/useUid';
+import { useUid } from '@/composables/useUid';
 import { ref } from 'vue';
 
 const emits = defineEmits(['update']);

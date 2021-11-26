@@ -1,9 +1,6 @@
 <script lang="ts" setup>
-import useUID from '@/composables/useUid';
+import { useUid } from '@/composables/useUid';
 import { ref } from '@vue/reactivity';
-
-const { id } = useUID();
-const emits = defineEmits(['update:modelValue']);
 
 defineProps({
 	modelValue: {
@@ -28,7 +25,10 @@ defineProps({
 	},
 });
 
-const emitUpdateEvent = (event: Event) => {
+const emits = defineEmits(['update:modelValue']);
+const { id } = useUid();
+
+const handleModelUpdate = (event: Event) => {
 	const value = (event.target as HTMLInputElement).value;
 	emits('update:modelValue', parseFloat(value));
 };
@@ -74,7 +74,7 @@ const typing = (e: KeyboardEvent) => {
 		:max="max"
 		:step="step"
 		:value="modelValue"
-		@input="emitUpdateEvent"
+		@input="handleModelUpdate"
 		v-on:keypress="typing"
 	/>
 </template>

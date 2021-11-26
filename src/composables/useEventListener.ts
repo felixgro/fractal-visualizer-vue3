@@ -9,7 +9,7 @@ export type EventOptions = {
     immediate?: boolean;
 }
 
-const useEventListener = (subject: EventSubject, event: string, handler: EventHandler, opts?: EventOptions) => {
+export const useEventListener = (subject: EventSubject, event: string, handler: EventHandler, opts?: EventOptions) => {
     onMounted(() => {
         if (subject === window) {
             subject.addEventListener(event, handler);
@@ -27,5 +27,3 @@ const useEventListener = (subject: EventSubject, event: string, handler: EventHa
         }
     });
 };
-
-export default useEventListener;

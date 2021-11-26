@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref, onMounted } from '@vue/runtime-core';
+import { ref, onMounted, onUpdated } from '@vue/runtime-core';
 import { throwIf } from '@/utils/error';
-import useUid from '@/composables/useUid';
+import { useUid } from '@/composables/useUid';
 
 const props = defineProps<{
 	label: string;
@@ -34,33 +34,47 @@ onMounted(() => {
 	colorizeSvg();
 });
 
-const emitInputEvent = (e: Event) => {
+onUpdated(() => {
 	colorizeSvg();
+});
+
+const emitInputEvent = (e: Event) => {
 	emits('update:modelValue', (e.target as HTMLInputElement).value);
+	colorizeSvg();
 };
 </script>
 
 <template>
-	<label :for="id('color')">
-		<slot />
-	</label>
-	<input
-		type="color"
-		:id="id('color')"
-		:value="modelValue"
-		@input="emitInputEvent"
-	/>
+	<div>
+		<label :for="id('color')">
+			<slot />
+		</label>
+		<input
+			type="color"
+			:id="id('color')"
+			:value="modelValue"
+			@input="emitInputEvent"
+		/>
+	</div>
 </template>
 
 <style scoped>
+div {
+	position: relative;
+}
+
 label {
-	cursor: pointer;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 input {
-	width: 0;
-	height: 0;
-	padding: 0;
-	margin: 0;
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
 	border: none;
 }
 </style>

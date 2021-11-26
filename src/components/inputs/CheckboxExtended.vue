@@ -1,12 +1,15 @@
 <script lang="ts" setup>
-import useHeightTransition from '@/composables/useHeightTransition';
-import useUid from '@/composables/useUid';
+import Checkbox from '@/components/inputs/Checkbox.vue';
+import { useHeightTransition } from '@/composables/useHeightTransition';
+import { useUid } from '@/composables/useUid';
+import { ref, onMounted, watch } from 'vue';
 
 const { id } = useUid();
+const isOpen = ref(false);
 const emits = defineEmits(['update:modelValue']);
 const transition = useHeightTransition();
 
-defineProps({
+const props = defineProps({
 	modelValue: {
 		required: true,
 		type: Boolean,
@@ -17,29 +20,24 @@ defineProps({
 	},
 });
 
-const emitUpdateEvent = (e: Event) => {
-	const value = (e.target as HTMLInputElement).checked;
-	emits('update:modelValue', value);
-};
+onMounted(() => {
+	if (props.modelValue) isOpen.value = true;
+});
+
+watch(isOpen, (val) => {
+	emits('update:modelValue', val);
+});
 </script>
 
 <template>
-	<label :for="id('checkbox')">
-		<input
-			type="checkbox"
-			:id="id('checkbox')"
-			:checked="modelValue"
-			@change="emitUpdateEvent"
-		/>
-		{{ label }}
-	</label>
+	<Checkbox :label="label" v-model="isOpen" />
 	<transition
 		name="expand"
 		@enter="transition.enter"
 		@after-enter="transition.afterEnter"
 		@leave="transition.leave"
 	>
-		<div v-show="modelValue" :aria-hidden="!modelValue">
+		<div v-show="isOpen" :aria-hidden="!isOpen">
 			<slot />
 		</div>
 	</transition>

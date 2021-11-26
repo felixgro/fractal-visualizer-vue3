@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
 import ToggleDialog from '@/components/ToggleDialog.vue';
+import { useRoute, useRouter } from 'vue-router';
+import { computed } from 'vue';
 
 const route = useRoute();
 const router = useRouter();

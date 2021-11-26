@@ -1,17 +1,11 @@
 <script lang="ts" setup>
-import * as Main from '@/components/main';
-import * as Layout from '@/components/layout';
+import MainHeader from '@/components/MainHeader.vue';
+import FractalRenderer from '@/components/FractalRenderer.vue';
 </script>
 
 <template>
-	<Layout.Header />
-
-	<main>
-		<!-- Renders current fractal state on screen -->
-		<Main.Renderer />
-	</main>
-
-	<Layout.Footer />
+	<MainHeader />
+	<FractalRenderer />
 </template>
 
 <style>

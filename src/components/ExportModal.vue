@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import type * as FRCTL from '@/types/fractal';
+import * as Input from '@/components/inputs';
 import ExportPresets from './ExportPresets.vue';
-import * as Form from '@/components/form';
-import { ref, onMounted } from '@vue/runtime-core';
 import ImageWorker from '@/core/imageWorker?worker';
-import useWorker from '@/composables/useWorker';
+import { useWorker } from '@/composables/useWorker';
 import { useFractalStore } from '@/stores/fractal';
 import { useExportStore } from '@/stores/export';
 import { useStyleStore } from '@/stores/style';
 import { throwIf } from '@/utils/error';
 import { downloadBlob } from '@/utils/file';
+import { ref, onMounted } from '@vue/runtime-core';
 
 const previewImage = ref<HTMLImageElement>();
 const fractalStore = useFractalStore();
@@ -85,19 +85,19 @@ const updateDimensions = (d: [number, number] | 'custom') => {
 		</div>
 		<ExportPresets @update="updateDimensions" />
 		<div class="row">
-			<Form.Number
+			<Input.Number
 				label="Width"
 				:max="10000"
 				v-model="exportStore.width"
 			/>
-			<Form.Number
+			<Input.Number
 				label="Height"
 				:max="10000"
 				v-model="exportStore.height"
 			/>
-			<Form.Text label="Format" v-model="exportStore.format" />
+			<Input.Text label="Format" v-model="exportStore.format" />
 		</div>
-		<Form.Button label="Download" v-on:click="downloadImage" />
+		<Input.Button label="Download" v-on:click="downloadImage" />
 	</div>
 </template>
 

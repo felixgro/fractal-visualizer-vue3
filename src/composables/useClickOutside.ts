@@ -1,5 +1,5 @@
 import { Ref } from 'vue';
-import useEventListener from '@/composables/useEventListener';
+import { useEventListener } from '@/composables/useEventListener';
 
 type RefElement = Ref<HTMLElement | undefined>;
 
@@ -7,7 +7,7 @@ interface ClickOutsideConfig {
     ignore?: RefElement[];
 }
 
-const useClickOutside = (target: RefElement, handler: (e: Event) => void, config?: ClickOutsideConfig) => {
+export const useClickOutside = (target: RefElement, handler: (e: Event) => void, config?: ClickOutsideConfig) => {
     const clickHandler = (e: Event) => {
         if (!target.value) return;
         const clickTarget = e.target as Element;
@@ -24,5 +24,3 @@ const useClickOutside = (target: RefElement, handler: (e: Event) => void, config
 
     useEventListener(window, 'click', clickHandler);
 }
-
-export default useClickOutside;

@@ -1,9 +1,9 @@
 import type * as FRCTL from '@/types/fractal';
-import { ref, onMounted, onUnmounted } from 'vue';
-import useEventListener from '@/composables/useEventListener';
+import { useEventListener } from '@/composables/useEventListener';
 import { useFractalStore } from '@/stores/fractal';
 import { useStyleStore } from '@/stores/style';
 import { throwIf } from '@/utils/error';
+import { ref, onMounted, onUnmounted } from 'vue';
 import Pen from '@/libs/Pen';
 
 // used for defining a draw handler in each src/core/alogrithms/*.ts file.

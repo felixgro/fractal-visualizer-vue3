@@ -6,7 +6,7 @@ export interface UseWorkerOptions {
     terminateAfter?: number;
 }
 
-const useWorker = (WorkerClass: new () => Worker, opts?: UseWorkerOptions) => {
+export const useWorker = (WorkerClass: new () => Worker, opts?: UseWorkerOptions) => {
     const worker = ref<Worker | null>(null);
     const timeoutId = ref<number>();
 
@@ -22,16 +22,20 @@ const useWorker = (WorkerClass: new () => Worker, opts?: UseWorkerOptions) => {
 
     const terminate = () => {
         if (!worker.value) return;
-        console.log('terminating worker');
+        if (timeoutId.value) {
+            clearTimeout(timeoutId.value)
+            timeoutId.value = 0;
+        };
 
+        console.log('terminating worker');
         worker.value.terminate();
         worker.value = null;
     }
 
     const spawn = () => {
         if (worker.value) return;
-        console.log('spawning worker');
 
+        console.log('spawning worker');
         worker.value = new WorkerClass();
 
         if (handler.value) worker.value.onmessage = handler.value;
@@ -58,5 +62,3 @@ const useWorker = (WorkerClass: new () => Worker, opts?: UseWorkerOptions) => {
         terminate,
     };
 }
-
-export default useWorker;

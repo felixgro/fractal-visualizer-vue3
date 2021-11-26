@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import MainLogo from '@/components/main/MainLogo.vue';
+import Logo from '@/components/icons/Logo.vue';
 import FractalNav from '@/components/FractalNav.vue';
 import FractalMenu from '@/components/FractalMenu.vue';
 </script>
 
 <template>
 	<header>
-		<MainLogo />
+		<Logo />
 
 		<div class="right">
 			<FractalNav />

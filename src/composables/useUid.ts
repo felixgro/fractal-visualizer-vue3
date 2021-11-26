@@ -3,7 +3,7 @@ import { ref, onBeforeMount } from 'vue';
 // internal id count to prevent duplicate ids
 let _id = 0;
 
-const useUid = () => {
+export const useUid = () => {
     const uid = ref(_id);
 
     // generate unique id string for dom element within component
@@ -13,5 +13,3 @@ const useUid = () => {
 
     return { id, uid };
 }
-
-export default useUid;

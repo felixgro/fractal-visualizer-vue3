@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import { useEventListener } from '@/composables/useEventListener';
 import { ref, onMounted } from 'vue';
-import useEventListener from '@/composables/useEventListener';
 
 const canvas = ref<HTMLCanvasElement>();
 

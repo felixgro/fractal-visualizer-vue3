@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import type * as FRCTL from '@/types/fractal';
 import { ref } from 'vue';
-import * as FRCTL from '@/types/fractal';
 
 const preview = ref<HTMLCanvasElement>();
 

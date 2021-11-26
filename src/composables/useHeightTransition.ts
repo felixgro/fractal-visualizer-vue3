@@ -1,4 +1,4 @@
-const useHeightTransition = () => {
+export const useHeightTransition = () => {
     const enter = (element: Element, done: () => void) => {
         const el = element as HTMLElement;
         const width = getComputedStyle(el).width;
@@ -49,6 +49,4 @@ const useHeightTransition = () => {
     };
 
     return { enter, afterEnter, leave };
-}
-
-export default useHeightTransition;
+};
