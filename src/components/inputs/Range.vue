@@ -50,9 +50,9 @@ const handleModelUpdate = (e: Event) => {
 		ref="input"
 		type="range"
 		:id="id('range')"
-		:min="min || 0"
-		:max="max || 100"
-		:step="step || 1"
+		:min="min"
+		:max="max"
+		:step="step"
 		:value="modelValue"
 		@input="handleModelUpdate"
 	/>
