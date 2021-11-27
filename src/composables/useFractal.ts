@@ -26,7 +26,7 @@ export const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<St
     const storeObserver = [
         fractalStyles.$subscribe(renderFractal),
         fractalState.$subscribe((mut) => {
-            if (mut.type === 'patch function' || Array.isArray(mut.events)) return;
+            if (!mut.events || mut.type === 'patch function' || Array.isArray(mut.events)) return;
             if (opts.ignore?.includes(mut.events.key)) return;
             renderFractal();
         })
