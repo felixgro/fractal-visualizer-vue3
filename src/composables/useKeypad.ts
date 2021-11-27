@@ -8,7 +8,7 @@ export interface KeypadOpts {
     target: Ref<HTMLElement | undefined>;
     allowFloats: boolean;
     delay: number;
-    handler: KeypadHandler
+    handler: KeypadHandler;
 }
 
 export interface KeypadReturn {
