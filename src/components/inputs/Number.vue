@@ -45,6 +45,6 @@ onMounted(() => {
 
 <style scoped>
 input {
-	width: 40px;
+	width: 45px;
 }
 </style>

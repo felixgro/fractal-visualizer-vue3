@@ -26,7 +26,6 @@ useClickOutside(
 	container,
 	(e: Event) => {
 		if (!isOpen) return;
-		e.preventDefault();
 		isOpen.value = false;
 	},
 	{ ignore: [btn] }

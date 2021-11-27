@@ -23,6 +23,5 @@ form {
 
 .fractal-state {
 	padding: 12px;
-	padding-top: 0;
 }
 </style>

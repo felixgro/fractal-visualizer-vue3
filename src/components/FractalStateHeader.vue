@@ -50,7 +50,11 @@ const exporting = ref(false);
 					></circle>
 				</svg>
 			</Input.Color>
-			<Input.Number label="stroke width" v-model="styles.lw">
+			<Input.Number
+				label="stroke width"
+				v-model="styles.lw"
+				:step="0.1"
+			>
 				<svg
 					width="28"
 					height="28"

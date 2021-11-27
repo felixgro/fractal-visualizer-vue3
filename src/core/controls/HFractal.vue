@@ -33,7 +33,12 @@ onMounted(() => {
 </script>
 
 <template>
-	<Input.Range label="Step" v-model="state.step" :max="15" />
+	<Input.Range
+		label="Step"
+		v-model="state.step"
+		:max="10"
+		:warn="true"
+	/>
 	<Input.Range
 		label="Scale"
 		v-model="state.scale"
@@ -73,15 +78,5 @@ onMounted(() => {
 			v-model:to="state.toColor"
 			v-model:range="state.range"
 		/>
-		<!-- <Input.Color label="FROM" v-model="state.fromColor">
-		</Input.Color>
-		<Input.Color label="TO" v-model="state.toColor" />
-		<Input.Range
-			label="Range"
-			v-model="state.range"
-			:min="0.1"
-			:max="1"
-			:step="0.1"
-		/> -->
 	</Input.CheckboxExtended>
 </template>
