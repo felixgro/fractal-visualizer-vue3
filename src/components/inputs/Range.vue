@@ -36,41 +36,6 @@ const handleModelUpdate = (e: Event) => {
 	const value = (e.target as HTMLInputElement).value;
 	emits('update:modelValue', parseFloat(value));
 };
-
-// const stringNum = ref<string>('');
-// const commaSymbols = ['.', ','];
-// let tid: number | null = null;
-// const tdelay = 1000;
-
-// const typing = (e: KeyboardEvent) => {
-// 	const isComma = commaSymbols.includes(e.key);
-// 	const isNumber = !isNaN(parseFloat(e.key));
-
-// 	if (isComma) {
-// 		stringNum.value += stringNum.value ? '.' : '0.';
-// 	} else if (isNumber) {
-// 		stringNum.value += e.key;
-// 	}
-
-// 	if (tid) {
-// 		clearTimeout(tid);
-// 		tid = null;
-// 	}
-
-// 	tid = setTimeout(() => {
-// 		const num = parseFloat(stringNum.value);
-// 		stringNum.value = '';
-
-// 		if (props.warn && props.max && num > props.max) {
-// 			const confirmed = window.confirm(
-// 				`${props.label} has a defined maximum of ${props.max}. Exceeding this limit could lead to performance issues. Are you sure you want to set ${num} as the new ${props.label} value?`
-// 			);
-// 			if (!confirmed) return;
-// 		}
-
-// 		emits('update:modelValue', num);
-// 	}, tdelay);
-// };
 </script>
 
 <template>
