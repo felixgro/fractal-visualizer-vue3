@@ -39,3 +39,9 @@ export const createGradient = (opts: { steps: number, from: string, to: string, 
         return rgbToHex({ r, g, b });
     }
 }
+
+// returns number between 1 and 0 while 0 is the darkest and 1 is the brightest
+export const getBrightness = (hex: string): number => {
+    const { r, g, b } = hexToRgb(hex);
+    return (r * 299 + g * 587 + b * 114) / 1000 / 255;
+}

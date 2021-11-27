@@ -9,6 +9,7 @@ const props = defineProps<{
 	colorSelector: string;
 }>();
 
+const input = ref<HTMLInputElement>();
 const colorables = ref<NodeListOf<SVGElement>>();
 const emits = defineEmits(['update:modelValue']);
 const { id } = useUid();
@@ -34,26 +35,36 @@ onMounted(() => {
 	colorizeSvg();
 });
 
-onUpdated(() => {
-	colorizeSvg();
-});
+onUpdated(colorizeSvg);
 
-const emitInputEvent = (e: Event) => {
-	emits('update:modelValue', (e.target as HTMLInputElement).value);
+const handleModelUpdate = (e: Event) => {
+	const value = (e.target as HTMLInputElement).value;
+	emits('update:modelValue', value);
 	colorizeSvg();
+};
+
+const handleKeyboardClick = (e: KeyboardEvent) => {
+	if (e.key !== 'Enter') return;
+	input.value!.click();
 };
 </script>
 
 <template>
 	<div>
-		<label :for="id('color')">
+		<label
+			:for="id('color')"
+			tabindex="0"
+			@keyup="handleKeyboardClick"
+		>
 			<slot />
 		</label>
 		<input
+			ref="input"
 			type="color"
+			tabindex="-1"
 			:id="id('color')"
 			:value="modelValue"
-			@input="emitInputEvent"
+			@input="handleModelUpdate"
 		/>
 	</div>
 </template>
@@ -69,12 +80,13 @@ label {
 	align-items: center;
 	justify-content: center;
 }
+
 input {
 	position: absolute;
 	inset: 0;
+	opacity: 0;
 	width: 100%;
 	height: 100%;
-	opacity: 0;
 	border: none;
 }
 </style>

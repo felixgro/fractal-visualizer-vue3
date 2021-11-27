@@ -1,0 +1,17 @@
+body {
+	--color-transition: all 240ms ease-out;
+	--logo: #000;
+	--dialog-bg: #ededed;
+	--state-header-bg: #ddd;
+	--dialog-txt: #222;
+
+	--range-track: #ddd;
+}
+
+body.dark {
+	--logo: #fff;
+	--dialog-bg: #222;
+	--state-header-bg: #333;
+	--dialog-txt: #eee;
+	--range-track: #333;
+}

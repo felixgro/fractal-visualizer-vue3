@@ -1,4 +1,5 @@
 @import './reset';
+@import './colors';
 @import './slider';
 
 #app {
@@ -20,4 +21,12 @@ label {
 
 small {
 	display: block;
+}
+
+.hide-scrollbar {
+	scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+	display: none;
 }

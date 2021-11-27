@@ -20,8 +20,8 @@
 </template>
 
 <style scoped>
-/* svg {
-	filter: invert(1);
-	mix-blend-mode: difference;
-} */
+svg path {
+	transition: var(--color-transition);
+	fill: var(--logo);
+}
 </style>

@@ -84,12 +84,12 @@ const exporting = ref(false);
 header {
 	position: sticky;
 	top: 0;
-	padding: 6px;
-	background: #eee;
+	padding: 7px 20px;
+	background: var(--state-header-bg);
+	transition: var(--color-transition);
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .styles {

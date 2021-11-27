@@ -6,7 +6,7 @@ import FractalStateHeader from './FractalStateHeader.vue';
 	<form @submit.prevent>
 		<FractalStateHeader />
 
-		<div class="fractal-state">
+		<div class="fractal-state hide-scrollbar">
 			<RouterView />
 		</div>
 	</form>
@@ -14,14 +14,17 @@ import FractalStateHeader from './FractalStateHeader.vue';
 
 <style scoped>
 form {
-	width: 250px;
-	max-height: 420px;
-	overflow-y: scroll;
-	border: 1px solid #ccc;
-	background: #eee;
+	width: 280px;
+	border-radius: 15px;
+	overflow: hidden;
+	color: var(--dialog-txt);
+	background: var(--dialog-bg);
+	transition: var(--color-transition);
 }
 
 .fractal-state {
-	padding: 12px;
+	max-height: 420px;
+	padding: 20px;
+	overflow-y: scroll;
 }
 </style>
