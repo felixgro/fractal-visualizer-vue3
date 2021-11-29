@@ -27,4 +27,9 @@ export default class Pen extends BasePen {
         this.ctx.lineWidth = this.canvas.width * (relWidth / 100);
         return this;
     }
+
+    public rotate(radians: number): this {
+        this.ctx.rotate(radians);
+        return this;
+    }
 }

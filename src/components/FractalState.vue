@@ -3,13 +3,13 @@ import FractalStateHeader from './FractalStateHeader.vue';
 import ExportModal from '@/components/ExportModal.vue';
 import { ref } from 'vue';
 
-const exporting = ref(true);
+const exporting = ref(false);
 </script>
 
 <template>
 	<form @submit.prevent>
 		<transition name="slide-left">
-			<ExportModal v-if="exporting" />
+			<ExportModal v-show="exporting" v-model="exporting" />
 		</transition>
 
 		<FractalStateHeader @toggleExport="exporting = !exporting" />

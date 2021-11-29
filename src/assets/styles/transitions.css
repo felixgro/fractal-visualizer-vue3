@@ -8,5 +8,6 @@
 
 .slide-left-enter-from,
 .slide-left-leave-to {
-	transform: scaleX(0);
+	transform: translateX(30px);
+	opacity: 0;
 }

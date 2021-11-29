@@ -78,7 +78,7 @@ export default defineFractal<HFractal>((pen, state) => {
 
     const pB = new Vec2(
         rootX,
-        pen.canvas.height - state.rootLength - rootY
+        pen.canvas.height - state.rootLength * pen.canvas.height - rootY
     );
 
     pen.line([rootX, pen.canvas.height], pA.pos).stroke(gradient(0));

@@ -9,7 +9,7 @@ const { state } = useFractal<PyTree>({
 	state: {
 		step: 5,
 		scale: 0.5,
-		angleDeg: 90,
+		angleDeg: 0,
 		angle: 0,
 	},
 	ignore: ['angle'],
@@ -28,7 +28,7 @@ const { state } = useFractal<PyTree>({
 	<Input.Range
 		label="Angle"
 		v-model="state.angleDeg"
-		:max="360"
+		:max="90"
 		:step="1"
 	/>
 </template>

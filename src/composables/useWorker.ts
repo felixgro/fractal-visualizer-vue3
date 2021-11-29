@@ -55,12 +55,15 @@ export const useWorker = (WorkerClass: new () => Worker, opts?: UseWorkerOptions
         handler.value = cb;
     }
 
+    const isRunning = () => worker.value !== null;
+
     onUnmounted(terminate);
 
     return {
         on,
         post,
         spawn,
+        isRunning,
         terminate,
     };
 }

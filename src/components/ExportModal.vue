@@ -9,10 +9,16 @@ import { useExportStore } from '@/stores/export';
 import { useStyleStore } from '@/stores/style';
 import { throwIf } from '@/utils/error';
 import { downloadBlob } from '@/utils/file';
-import { ref, onMounted } from '@vue/runtime-core';
+import { ref, onMounted, onUpdated, watch } from '@vue/runtime-core';
+import { debounce } from '@/utils/debounce';
+import { useRoute } from 'vue-router';
+
+const props = defineProps<{
+	modelValue: boolean;
+}>();
 
 const previewImage = ref<HTMLImageElement>();
-
+const route = useRoute();
 const fractalStore = useFractalStore();
 const styleStore = useStyleStore();
 const exportStore = useExportStore();
@@ -29,7 +35,7 @@ imageWorker.on<FRCTL.SaveMessage>(({ data: image }) => {
 
 const generatePreviewImage = () => {
 	const imageData: FRCTL.ExportMessage = {
-		fractal: 'hfractal',
+		fractal: route.name as string,
 		state: { ...fractalStore.$state },
 		export: { ...exportStore.$state },
 		styles: { ...styleStore.$state },
@@ -46,9 +52,29 @@ const downloadImage = () => {
 		});
 };
 
-exportStore.$subscribe(() => {
+// this replaces onMounted hook because component get's pre-mounted event when it is not visible
+// props.modelvalue is not set to false when component is pre-mounted or when it gets visually hidden.
+// this enables a reuse of previously spawned ImageWorker.
+onUpdated(() => {
+	if (!props.modelValue || imageWorker.isRunning()) return;
 	generatePreviewImage();
 });
+
+// debounce when fractal state change to avoid unnecessary image generation
+const stateDebounce = {
+	timeout: 1000,
+	trailing: true,
+	leading: false,
+};
+
+const stateObserver = debounce(() => {
+	if (!props.modelValue) return;
+	generatePreviewImage();
+}, stateDebounce);
+
+fractalStore.$subscribe(stateObserver);
+styleStore.$subscribe(stateObserver);
+exportStore.$subscribe(stateObserver);
 
 onMounted(() => {
 	throwIf(!previewImage.value, 'Cannot find PreviewImage Element');
@@ -67,8 +93,6 @@ onMounted(() => {
 			previewImage.value!.style.height = 'auto';
 		}
 	};
-
-	generatePreviewImage();
 });
 
 const setExportPreset = (d: [number, number] | 'custom') => {
@@ -86,8 +110,8 @@ const setExportPreset = (d: [number, number] | 'custom') => {
 		<div class="preview">
 			<img ref="previewImage" />
 		</div>
-		<ExportPresets @update="setExportPreset" />
 		<form @submit.prevent="downloadImage">
+			<ExportPresets @update="setExportPreset" />
 			<div class="dimensions">
 				<Input.Number
 					label="Width"
@@ -142,7 +166,6 @@ div.modal {
 .dimensions {
 	display: flex;
 	padding-right: calc(var(--state-border-radius) * 1.8);
-	padding: 15px;
 }
 
 .preview {
@@ -166,6 +189,7 @@ select {
 	border: none;
 	font-weight: bold;
 	cursor: pointer;
+	margin: 0;
 }
 
 header {
@@ -175,7 +199,19 @@ header {
 	align-items: center;
 	background: var(--state-header-bg);
 }
+
 form {
-	padding-right: calc(var(--state-border-radius) * 1.8);
+	position: relative;
+	padding: var(--state-preview-padding) var(--state-padding);
+	padding-right: calc(
+		var(--state-border-radius) * 1.8 +
+			var(--state-preview-padding)
+	);
+}
+
+button {
+	display: block;
+	margin: 0 auto;
+	margin-top: 5px;
 }
 </style>

@@ -5,12 +5,10 @@ import { useFractal } from '@/composables/useFractal';
 import { useHotkey } from '@/composables/useHotkey';
 import * as Input from '@/components/inputs';
 
-const { height } = useWindowSize();
-
 const { state } = useFractal<HFractal>({
 	state: {
 		step: 4,
-		rootLength: height.value * 0.75,
+		rootLength: 0.75,
 		xShift: 0,
 		yShift: 0,
 		angleDeg: 15,
@@ -41,17 +39,16 @@ useHotkey(['q'], () => console.log('swag'));
 		:warn="true"
 	/>
 	<Input.Range
-		label="Root Length"
-		v-model="state.rootLength"
-		:max="1000"
-		:min="10"
-		:step="1"
-	/>
-	<Input.Range
 		label="Angle"
 		v-model="state.angleDeg"
 		:max="360"
 		:step="1"
+	/>
+	<Input.Range
+		label="Root Length"
+		v-model="state.rootLength"
+		:max="1"
+		:step="0.01"
 	/>
 	<Input.Range
 		label="Trunk Ratio"
