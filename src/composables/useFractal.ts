@@ -10,6 +10,11 @@ import Pen from '@/libs/Pen';
 // the defined callback will be executed within a the worker thread.
 export const defineFractal = <State>(handler: FRCTL.DrawHandler<State>) => handler;
 
+const getIterations = (steps: number): number => {
+    if (steps === 0) return 1;
+    return getIterations(steps - 1) * 2 + 1;
+}
+
 export const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<State>): FRCTL.Return<State> => {
     const renderer = ref<HTMLCanvasElement>();
     const fractalState = useFractalStore();
@@ -27,7 +32,8 @@ export const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<St
         const executionDuration = endTime - startTime;
 
         if (executionDuration > 10) {
-            console.warn(`Fractal rendering took ${Math.round(executionDuration * 1000) / 1000}ms`);
+            const iterations = getIterations(fractalState.$state.step);
+            console.warn(`Fractal rendering took ${Math.round(executionDuration * 1000) / 1000}ms (${fractalState.$state.step} Steps with ${iterations} Itarations)`);
         }
     }
 
