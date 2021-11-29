@@ -75,9 +75,9 @@ const exporting = ref(false);
 		<Input.Button @click="exporting = !exporting">
 			EXP
 		</Input.Button>
-	</header>
 
-	<ExportModal v-if="exporting" />
+		<ExportModal v-if="exporting" />
+	</header>
 </template>
 
 <style scoped>

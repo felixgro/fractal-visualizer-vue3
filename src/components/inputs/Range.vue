@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useUid } from '@/composables/useUid';
 import { useKeypad } from '@/composables/useKeypad';
+import { isFloat } from '@/utils/math';
 import { ref } from 'vue';
 
 const props = defineProps<{
@@ -19,7 +20,7 @@ const { id } = useUid();
 const { stringNum } = useKeypad({
 	target: input,
 	delay: 1000,
-	allowFloats: true,
+	allowFloats: props.step ? isFloat(props.step) : false,
 	handler: (num: number) => {
 		if (props.warn && props.max && num > props.max) {
 			const confirmed = window.confirm(

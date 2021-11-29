@@ -39,7 +39,8 @@ export const useKeypad = (opts: KeypadOpts): KeypadReturn => {
         }
 
         tid = setTimeout(() => {
-            opts.handler.call({}, parseFloat(stringNum.value));
+            const n = opts.allowFloats ? parseFloat(stringNum.value) : parseInt(stringNum.value);
+            opts.handler.call({}, n);
             stringNum.value = '';
         }, opts.delay);
     }

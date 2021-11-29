@@ -1,5 +1,7 @@
 body {
 	--color-transition: all 240ms ease-out;
+	--state-border-radius: 24px;
+
 	--logo: #000;
 	--dialog-bg: #ededed;
 	--state-header-bg: #ddd;

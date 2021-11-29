@@ -12,15 +12,16 @@ import { downloadBlob } from '@/utils/file';
 import { ref, onMounted } from '@vue/runtime-core';
 
 const previewImage = ref<HTMLImageElement>();
+
 const fractalStore = useFractalStore();
 const styleStore = useStyleStore();
 const exportStore = useExportStore();
+
 const imageWorker = useWorker(ImageWorker, {
 	terminateAfter: 15000,
 });
 
 imageWorker.on<FRCTL.SaveMessage>(({ data: image }) => {
-	if (!previewImage.value) return;
 	// TODO: better error handling for worker tasks
 	if (image.error) throw new Error(image.error);
 	previewImage.value!.src = URL.createObjectURL(image.blob);
@@ -70,7 +71,7 @@ onMounted(() => {
 	generatePreviewImage();
 });
 
-const updateDimensions = (d: [number, number] | 'custom') => {
+const setExportPreset = (d: [number, number] | 'custom') => {
 	if (d === 'custom') return;
 	exportStore.width = d[0];
 	exportStore.height = d[1];
@@ -79,47 +80,61 @@ const updateDimensions = (d: [number, number] | 'custom') => {
 
 <template>
 	<div class="modal">
-		<h1>Export Config</h1>
 		<div class="preview">
 			<img ref="previewImage" />
 		</div>
-		<ExportPresets @update="updateDimensions" />
-		<div class="row">
-			<Input.Number
-				label="Width"
-				:max="10000"
-				v-model="exportStore.width"
-			/>
-			<Input.Number
-				label="Height"
-				:max="10000"
-				v-model="exportStore.height"
-			/>
-			<Input.Text label="Format" v-model="exportStore.format" />
-		</div>
-		<Input.Button label="Download" v-on:click="downloadImage" />
+		<ExportPresets @update="setExportPreset" />
+		<form @submit.prevent="downloadImage">
+			<div class="dimensions">
+				<Input.Number
+					label="Width"
+					:max="10000"
+					v-model="exportStore.width"
+				/>
+				<Input.Number
+					label="Height"
+					:max="10000"
+					v-model="exportStore.height"
+				/>
+			</div>
+			<Input.Button label="Download">
+				Save as
+				<select v-model="exportStore.format" @click.prevent>
+					<option value="image/png">PNG</option>
+					<option value="image/jpeg">JPEG</option>
+					<option value="image/jpg">JPG</option>
+					<option value="image/webp">WEBP</option>
+				</select>
+			</Input.Button>
+		</form>
 	</div>
 </template>
 
 <style scoped>
 div.modal {
-	position: fixed;
+	position: absolute;
 	display: block;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 450px;
+	top: 100%;
+	width: 100%;
+	left: 0;
 	background: #ccc;
-	padding: 20px;
+	border-bottom-left-radius: var(--state-border-radius);
+	border-bottom-right-radius: var(--state-border-radius);
 }
 
-div.row {
+.dimensions {
 	display: flex;
+	padding: 15px;
 }
 
 button {
+	display: block;
 	margin-top: 10px;
 	width: 100%;
+	border: 0;
+	height: 40px;
+	background: #aaa;
+	border-radius: var(--state-border-radius);
 }
 
 .preview {
@@ -128,10 +143,16 @@ button {
 	align-items: center;
 	justify-content: center;
 	width: 100%;
-	height: 200px;
+	height: 120px;
 	padding: 10px;
 	background: #bbb;
-	margin: 15px 0;
 	overflow: hidden;
+}
+
+select {
+	background: none;
+	border: none;
+	font-weight: bold;
+	cursor: pointer;
 }
 </style>

@@ -38,3 +38,9 @@ const emitChangeEvent = () => {
 		</option>
 	</select>
 </template>
+
+<style scoped>
+select {
+	margin: 10px;
+}
+</style>

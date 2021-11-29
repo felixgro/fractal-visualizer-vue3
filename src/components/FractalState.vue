@@ -15,7 +15,7 @@ import FractalStateHeader from './FractalStateHeader.vue';
 <style scoped>
 form {
 	width: 280px;
-	border-radius: 15px;
+	border-radius: var(--state-border-radius);
 	overflow: hidden;
 	color: var(--dialog-txt);
 	background: var(--dialog-bg);
@@ -23,7 +23,7 @@ form {
 }
 
 .fractal-state {
-	max-height: 420px;
+	max-height: 620px;
 	padding: 20px;
 	overflow-y: scroll;
 }
