@@ -20,7 +20,15 @@ export const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<St
     const renderFractal = () => {
         throwIf(!renderer.value, 'Cannot find canvas element for rendering fractal');
         const pen = Pen.fromStyles(renderer.value!, fractalStyles);
+
+        const startTime = performance.now();
         opts.drawHandler.call({}, pen, fractalState.$state as State);
+        const endTime = performance.now();
+        const executionDuration = endTime - startTime;
+
+        if (executionDuration > 10) {
+            console.warn(`Fractal rendering took ${Math.round(executionDuration * 1000) / 1000}ms`);
+        }
     }
 
     const storeObserver = [
