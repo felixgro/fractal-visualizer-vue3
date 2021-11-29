@@ -22,7 +22,7 @@ export const useEventListener = (subject: EventSubject, event: string, handler: 
     });
 
     onUnmounted(() => {
-        if (subject === window) {
+        if (subject === window || subject === document) {
             subject.removeEventListener(event, handler);
         } else if ((subject as Ref).value) {
             (subject as Ref).value.removeEventListener(event, handler);

@@ -1,15 +1,16 @@
 <script lang="ts" setup>
 import * as Input from '@/components/inputs';
-import ExportModal from '@/components/ExportModal.vue';
 import { useStyleStore } from '@/stores/style';
-import { ref } from 'vue';
 
 const styles = useStyleStore();
-const exporting = ref(false);
 </script>
 
 <template>
 	<header>
+		<Input.Button @click="$emit('toggle-export')">
+			EXP
+		</Input.Button>
+
 		<div class="styles">
 			<Input.Color
 				label="background color"
@@ -72,11 +73,6 @@ const exporting = ref(false);
 				</svg>
 			</Input.Number>
 		</div>
-		<Input.Button @click="exporting = !exporting">
-			EXP
-		</Input.Button>
-
-		<ExportModal v-if="exporting" />
 	</header>
 </template>
 
@@ -84,12 +80,15 @@ const exporting = ref(false);
 header {
 	position: sticky;
 	top: 0;
-	padding: 7px 20px;
+	padding: 0 20px;
+	height: 50px;
 	background: var(--state-header-bg);
 	transition: var(--color-transition);
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	border-top-left-radius: var(--state-border-radius);
+	border-top-right-radius: var(--state-border-radius);
 }
 
 .styles {

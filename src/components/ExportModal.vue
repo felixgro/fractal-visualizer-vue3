@@ -80,6 +80,9 @@ const setExportPreset = (d: [number, number] | 'custom') => {
 
 <template>
 	<div class="modal">
+		<header>
+			<h2>Export Fractal</h2>
+		</header>
 		<div class="preview">
 			<img ref="previewImage" />
 		</div>
@@ -107,6 +110,7 @@ const setExportPreset = (d: [number, number] | 'custom') => {
 				</select>
 			</Input.Button>
 		</form>
+		<div class="shadow"></div>
 	</div>
 </template>
 
@@ -115,26 +119,30 @@ div.modal {
 	position: absolute;
 	display: block;
 	top: 100%;
+	z-index: 0;
 	width: 100%;
-	left: 0;
-	background: #ccc;
-	border-bottom-left-radius: var(--state-border-radius);
-	border-bottom-right-radius: var(--state-border-radius);
+	right: 100%;
+	margin-right: calc(var(--state-border-radius) * -1.8);
+	top: 0;
+	border-radius: var(--state-border-radius);
+	background: var(--state-bg);
+	overflow: hidden;
+}
+
+.shadow {
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 0;
+	height: 100%;
+	box-shadow: -30px 0 30px 10px rgba(0, 0, 0, 0.2);
+	z-index: 100;
 }
 
 .dimensions {
 	display: flex;
+	padding-right: calc(var(--state-border-radius) * 1.8);
 	padding: 15px;
-}
-
-button {
-	display: block;
-	margin-top: 10px;
-	width: 100%;
-	border: 0;
-	height: 40px;
-	background: #aaa;
-	border-radius: var(--state-border-radius);
 }
 
 .preview {
@@ -143,10 +151,14 @@ button {
 	align-items: center;
 	justify-content: center;
 	width: 100%;
-	height: 120px;
-	padding: 10px;
-	background: #bbb;
 	overflow: hidden;
+	height: var(--state-preview-height);
+	padding: var(--state-preview-padding);
+	background: var(--state-preview-bg);
+	padding-right: calc(
+		var(--state-border-radius) * 1.8 +
+			var(--state-preview-padding)
+	);
 }
 
 select {
@@ -154,5 +166,16 @@ select {
 	border: none;
 	font-weight: bold;
 	cursor: pointer;
+}
+
+header {
+	padding: 0 var(--state-padding);
+	height: var(--state-header-size);
+	display: flex;
+	align-items: center;
+	background: var(--state-header-bg);
+}
+form {
+	padding-right: calc(var(--state-border-radius) * 1.8);
 }
 </style>

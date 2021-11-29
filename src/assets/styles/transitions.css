@@ -1,0 +1,12 @@
+/* Enter and leave animations can use different */
+/* durations and timing functions.              */
+.slide-left-enter-active,
+.slide-left-leave-active {
+	transform-origin: right center;
+	transition: all 120ms ease-out;
+}
+
+.slide-left-enter-from,
+.slide-left-leave-to {
+	transform: scaleX(0);
+}

@@ -1,13 +1,18 @@
 <script lang="ts" setup>
-import { onMounted } from '@vue/runtime-core';
-import * as Input from '@/components/inputs';
-import { useFractal } from '@/composables/useFractal';
 import drawHandler, { HFractal } from '@/core/algorithms/HFractal';
+import { useWindowSize } from '@/composables/useWindowSize';
+import { useFractal } from '@/composables/useFractal';
+import { useHotkey } from '@/composables/useHotkey';
+import * as Input from '@/components/inputs';
+
+const { height } = useWindowSize();
 
 const { state } = useFractal<HFractal>({
 	state: {
 		step: 4,
-		scale: 0.7,
+		rootLength: height.value * 0.75,
+		xShift: 0,
+		yShift: 0,
 		angleDeg: 15,
 		angle: 0,
 		trunkRatio: 0.3,
@@ -24,12 +29,8 @@ const { state } = useFractal<HFractal>({
 	drawHandler,
 });
 
-onMounted(() => {
-	window.addEventListener('keydown', (e: KeyboardEvent) => {
-		if (e.code === 'KeyS' && e.shiftKey) return state.seed--;
-		if (e.code === 'KeyS') state.seed++;
-	});
-});
+useHotkey(['s', 'shift'], () => console.log('hi'));
+useHotkey(['q'], () => console.log('swag'));
 </script>
 
 <template>
@@ -40,10 +41,11 @@ onMounted(() => {
 		:warn="true"
 	/>
 	<Input.Range
-		label="Scale"
-		v-model="state.scale"
-		:max="3"
-		:step="0.01"
+		label="Root Length"
+		v-model="state.rootLength"
+		:max="1000"
+		:min="10"
+		:step="1"
 	/>
 	<Input.Range
 		label="Angle"
@@ -56,6 +58,20 @@ onMounted(() => {
 		v-model="state.trunkRatio"
 		:max="1"
 		:step="0.01"
+	/>
+	<Input.Range
+		label="X-Shift"
+		v-model="state.xShift"
+		:max="1"
+		:min="-1"
+		:step="0.001"
+	/>
+	<Input.Range
+		label="Y-Shift"
+		v-model="state.yShift"
+		:max="1"
+		:min="-1"
+		:step="0.001"
 	/>
 	<Input.CheckboxExtended label="Randomize" v-model="state.random">
 		<Input.Number label="Seed" v-model="state.seed" :max="1000" />

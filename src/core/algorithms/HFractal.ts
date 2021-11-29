@@ -5,7 +5,9 @@ import Vec2 from '@/libs/Vec2';
 
 export interface HFractal {
     step: number;
-    scale: number;
+    rootLength: number;
+    yShift: number;
+    xShift: number;
     angleDeg: number;
     angle: number;
     trunkRatio: number;
@@ -70,11 +72,16 @@ export default defineFractal<HFractal>((pen, state) => {
     };
 
     // initial points for first iteration
-    const pA = new Vec2(pen.canvas.width / 2, pen.canvas.height);
+    const rootX = pen.canvas.width / 2 + pen.canvas.width * state.xShift / 2;
+    const rootY = 0 + pen.canvas.height * state.yShift;
+    const pA = new Vec2(rootX, pen.canvas.height - rootY + 1);
+
     const pB = new Vec2(
-        pen.canvas.width / 2,
-        2 - (1 - pen.canvas.height * (1 - state.scale))
+        rootX,
+        pen.canvas.height - state.rootLength - rootY
     );
+
+    pen.line([rootX, pen.canvas.height], pA.pos).stroke(gradient(0));
 
     // start fractal recursion..
     hFractal(pA, pB, state.step);

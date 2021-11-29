@@ -1,10 +1,18 @@
 <script lang="ts" setup>
 import FractalStateHeader from './FractalStateHeader.vue';
+import ExportModal from '@/components/ExportModal.vue';
+import { ref } from 'vue';
+
+const exporting = ref(true);
 </script>
 
 <template>
 	<form @submit.prevent>
-		<FractalStateHeader />
+		<transition name="slide-left">
+			<ExportModal v-if="exporting" />
+		</transition>
+
+		<FractalStateHeader @toggleExport="exporting = !exporting" />
 
 		<div class="fractal-state hide-scrollbar">
 			<RouterView />
@@ -14,17 +22,23 @@ import FractalStateHeader from './FractalStateHeader.vue';
 
 <style scoped>
 form {
+	display: block;
+	position: relative;
 	width: 280px;
 	border-radius: var(--state-border-radius);
-	overflow: hidden;
-	color: var(--dialog-txt);
-	background: var(--dialog-bg);
+	color: var(--txt);
 	transition: var(--color-transition);
 }
 
 .fractal-state {
-	max-height: 620px;
+	position: relative;
+	max-height: 520px;
 	padding: 20px;
+	z-index: 10;
+	background: var(--state-bg);
+	overflow: hidden;
 	overflow-y: scroll;
+	border-bottom-left-radius: var(--state-border-radius);
+	border-bottom-right-radius: var(--state-border-radius);
 }
 </style>
