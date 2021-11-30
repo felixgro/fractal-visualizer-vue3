@@ -2,7 +2,7 @@
 import type * as FRCTL from '@/types/fractal';
 import * as Input from '@/components/inputs';
 import ExportPresets from './ExportPresets.vue';
-import ImageWorker from '@/core/imageWorker?worker';
+import ImageWorker from '@/core/imageWorker.ts?worker';
 import { useWorker } from '@/composables/useWorker';
 import { useFractalStore } from '@/stores/fractal';
 import { useExportStore } from '@/stores/export';
