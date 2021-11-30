@@ -24,5 +24,9 @@ export const useGlobalKeyStore = defineStore('globalKey', () => {
         return fractalStore.$state[key.value];
     });
 
-    return { key, increment, decrement, value };
+    const reset = () => {
+        key.value = '';
+    }
+
+    return { key, increment, decrement, value, reset };
 });

@@ -38,8 +38,6 @@ export const useWorker = (WorkerClass: new () => Worker, opts?: UseWorkerOptions
         console.log('spawning worker');
         worker.value = new WorkerClass();
 
-        worker.value.onerror = (e) => console.log('oops');
-
         if (handler.value) worker.value.onmessage = handler.value;
         setTerminateTimeout();
     }

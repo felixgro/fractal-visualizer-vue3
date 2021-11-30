@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import drawHandler, { HFractal } from '@/core/algorithms/HFractal';
-import { useWindowSize } from '@/composables/useWindowSize';
 import { useFractal } from '@/composables/useFractal';
-import { useHotkey } from '@/composables/useHotkey';
 import * as Input from '@/components/inputs';
 
 const { state } = useFractal<HFractal>({
@@ -26,9 +24,6 @@ const { state } = useFractal<HFractal>({
 	ignore: ['angle'],
 	drawHandler,
 });
-
-useHotkey(['s', 'shift'], () => console.log('hi'));
-useHotkey(['q'], () => console.log('swag'));
 </script>
 
 <template>

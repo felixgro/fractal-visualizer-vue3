@@ -27,7 +27,6 @@ export const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<St
 
     const renderFractal = () => {
         throwIf(!renderer.value, 'Cannot find canvas element for rendering fractal');
-        console.log('rendering fractal');
         const pen = Pen.fromStyles(renderer.value!, fractalStyles);
 
         const startTime = performance.now();
@@ -35,9 +34,6 @@ export const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<St
         const endTime = performance.now();
 
         debugStore.setExecutionDuration(endTime - startTime);
-        // debugStore.setIterations(fractalState.$state.steps);
-        // debugStore.frameDuration = endTime - startTime;
-        // debugStore.iterations = getIterations(fractalState.steps);
     }
 
     const storeObserver = [
@@ -45,7 +41,7 @@ export const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<St
         fractalState.$subscribe((mut) => {
             // TODO: refactor this!
             // prevent rendering fractal when route changes
-            if (Array.isArray(mut.events) && mut.events.length > 1) return;
+            if (Array.isArray(mut.events) && mut.events.length > 1 && mut.type !== 'direct') return;
             // prevent double rendering on start
             if (!mut.events || mut.type === 'patch object') return;
             // prevent rendering when ignored state changes

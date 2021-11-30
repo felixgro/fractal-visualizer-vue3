@@ -31,8 +31,14 @@ useEventListener(document, 'keydown', (e: KeyboardEvent) => {
 </script>
 
 <template>
-	<div>
+	<div @click="globalKeyStore.reset()">
 		{{ globalKeyStore.key || 'no key set' }}
 		{{ globalKeyStore.value }}
 	</div>
 </template>
+
+<style scoped>
+div {
+	cursor: pointer;
+}
+</style>
