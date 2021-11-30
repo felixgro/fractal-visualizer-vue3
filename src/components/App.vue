@@ -17,11 +17,19 @@ watch(
 <template>
 	<MainHeader />
 	<FractalRenderer />
+	<GlobalKeyBinding />
 
 	<footer>
+		<DebugInformation />
 		<div>
-			<DebugInformation />
-			<GlobalKeyBinding />
+			<a
+				href="https://github.com/felixgro/fractal-visualizer-vue3"
+				>Github</a
+			>
+			<a
+				href="https://github.com/felixgro/fractal-visualizer-vue3"
+				>Help</a
+			>
 		</div>
 	</footer>
 </template>
@@ -34,8 +42,12 @@ footer {
 	width: 100%;
 	padding: 20px;
 	left: 0;
-	align-items: center;
+	align-items: flex-end;
 	justify-content: space-between;
 	bottom: 0;
+}
+
+a {
+	margin-left: 1rem;
 }
 </style>

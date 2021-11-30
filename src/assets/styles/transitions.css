@@ -11,3 +11,27 @@
 	transform: translateX(30px);
 	opacity: 0;
 }
+
+.slide-right-enter-active,
+.slide-right-leave-active {
+	transform-origin: right center;
+	transition: all 120ms ease-out;
+}
+
+.slide-right-enter-from,
+.slide-right-leave-to {
+	transform: translateX(-30px);
+	opacity: 0;
+}
+
+.slide-down-enter-active,
+.slide-down-leave-active {
+	transform-origin: right center;
+	transition: all 120ms ease-out;
+}
+
+.slide-down-enter-from,
+.slide-down-leave-to {
+	transform: translateY(-10px);
+	opacity: 0;
+}

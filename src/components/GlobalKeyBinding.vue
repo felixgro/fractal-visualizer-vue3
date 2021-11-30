@@ -31,14 +31,31 @@ useEventListener(document, 'keydown', (e: KeyboardEvent) => {
 </script>
 
 <template>
-	<div @click="globalKeyStore.reset()">
-		{{ globalKeyStore.key || 'no key set' }}
-		{{ globalKeyStore.value }}
-	</div>
+	<transition name="slide-right">
+		<div
+			@click="globalKeyStore.reset()"
+			v-if="globalKeyStore.key !== ''"
+		>
+			<span>
+				{{ globalKeyStore.key }}
+			</span>
+			{{ globalKeyStore.value }}
+		</div>
+	</transition>
 </template>
 
 <style scoped>
 div {
+	position: fixed;
+	top: 90px;
+	left: 0;
+	padding: 14px 20px;
 	cursor: pointer;
+	background: var(--state-bg);
+	border-bottom-right-radius: var(--state-border-radius);
+	border-top-right-radius: var(--state-border-radius);
+}
+span {
+	display: block;
 }
 </style>

@@ -5,7 +5,7 @@ import { ref } from 'vue';
 // debugStore.setExecutionDuration(endTime - startTime);
 //         debugStore.setIterations(fractalState.steps);
 const getIterations = (steps: number): number => {
-    if (steps === 0) return 1;
+    if (steps <= 0) return 1;
     return getIterations(steps - 1) * 2 + 1;
 }
 

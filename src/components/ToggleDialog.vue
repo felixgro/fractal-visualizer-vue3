@@ -41,7 +41,7 @@ useClickOutside(
 		>
 			<slot />
 		</button>
-		<transition name="fade" v-if="stayInDom">
+		<transition name="slide-down" v-if="stayInDom">
 			<div
 				v-show="isOpen"
 				ref="container"
