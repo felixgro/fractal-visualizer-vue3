@@ -9,7 +9,7 @@ import { useExportStore } from '@/stores/export';
 import { useStyleStore } from '@/stores/style';
 import { throwIf } from '@/utils/error';
 import { downloadBlob } from '@/utils/file';
-import { ref, onMounted, onUpdated, watch } from '@vue/runtime-core';
+import { ref, onMounted, onUpdated } from '@vue/runtime-core';
 import { debounce } from '@/utils/debounce';
 import { useRoute } from 'vue-router';
 
