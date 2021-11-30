@@ -1,10 +1,12 @@
 import type * as FRCTL from '@/types/fractal';
 import { useEventListener } from '@/composables/useEventListener';
 import { useFractalStore } from '@/stores/fractal';
+import { useDebugStore } from '@/stores/debug';
 import { useStyleStore } from '@/stores/style';
 import { throwIf } from '@/utils/error';
 import { ref, onMounted, onUnmounted } from 'vue';
 import Pen from '@/libs/Pen';
+import { isArray } from '@vue/shared';
 
 // used for defining a draw handler in each src/core/alogrithms/*.ts file.
 // the defined callback will be executed within a the worker thread.
@@ -19,6 +21,7 @@ export const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<St
     const renderer = ref<HTMLCanvasElement>();
     const fractalState = useFractalStore();
     const fractalStyles = useStyleStore();
+    const debugStore = useDebugStore();
 
     fractalState.fresh(opts.state);
 
@@ -30,20 +33,25 @@ export const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<St
         const startTime = performance.now();
         opts.drawHandler.call({}, pen, fractalState.$state as State);
         const endTime = performance.now();
-        const executionDuration = endTime - startTime;
 
-        if (executionDuration > 10) {
-            const iterations = getIterations(fractalState.$state.step);
-            console.warn(`Fractal rendering took ${Math.round(executionDuration * 1000) / 1000}ms (${fractalState.$state.step} Steps with ${iterations} Itarations)`);
-        }
+        debugStore.setExecutionDuration(endTime - startTime);
+        // debugStore.setIterations(fractalState.$state.steps);
+        // debugStore.frameDuration = endTime - startTime;
+        // debugStore.iterations = getIterations(fractalState.steps);
     }
 
     const storeObserver = [
         fractalStyles.$subscribe(renderFractal),
         fractalState.$subscribe((mut) => {
+            // TODO: refactor this!
+            // prevent rendering fractal when route changes
+            if (Array.isArray(mut.events) && mut.events.length > 1) return;
+            // prevent double rendering on start
             if (!mut.events || mut.type === 'patch object') return;
+            // prevent rendering when ignored state changes
             if (!Array.isArray(mut.events) && opts.ignore?.includes(mut.events.key))
                 return;
+
             renderFractal();
         })
     ]

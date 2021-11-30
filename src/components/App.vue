@@ -2,6 +2,7 @@
 import MainHeader from '@/components/MainHeader.vue';
 import FractalRenderer from '@/components/FractalRenderer.vue';
 import GlobalKeyBinding from './GlobalKeyBinding.vue';
+import DebugInformation from './DebugInformation.vue';
 import { useStyleStore } from '@/stores/style';
 import { watch } from 'vue';
 
@@ -18,7 +19,10 @@ watch(
 	<FractalRenderer />
 
 	<footer>
-		<GlobalKeyBinding />
+		<div>
+			<DebugInformation />
+			<GlobalKeyBinding />
+		</div>
 	</footer>
 </template>
 
@@ -26,6 +30,12 @@ watch(
 @import '@/assets/styles/main.css';
 footer {
 	position: fixed;
+	display: flex;
+	width: 100%;
+	padding: 20px;
+	left: 0;
+	align-items: center;
+	justify-content: space-between;
 	bottom: 0;
 }
 </style>

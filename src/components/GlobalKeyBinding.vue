@@ -36,9 +36,3 @@ useEventListener(document, 'keydown', (e: KeyboardEvent) => {
 		{{ globalKeyStore.value }}
 	</div>
 </template>
-
-<style scoped>
-div {
-	margin-bottom: 15px;
-}
-</style>
