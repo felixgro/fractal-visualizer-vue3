@@ -40,11 +40,12 @@ onMounted(() => {
 		:step="step || 1"
 		:id="id('number')"
 		@input="emitUpdateEvent"
+		:data-key="label.toLowerCase()"
 	/>
 </template>
 
 <style scoped>
 input {
-	width: 45px;
+	width: 65px;
 }
 </style>

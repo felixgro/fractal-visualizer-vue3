@@ -24,6 +24,7 @@ export const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<St
 
     const renderFractal = () => {
         throwIf(!renderer.value, 'Cannot find canvas element for rendering fractal');
+        console.log('rendering fractal');
         const pen = Pen.fromStyles(renderer.value!, fractalStyles);
 
         const startTime = performance.now();
@@ -40,8 +41,9 @@ export const useFractal = <State extends FRCTL.BaseState>(opts: FRCTL.Options<St
     const storeObserver = [
         fractalStyles.$subscribe(renderFractal),
         fractalState.$subscribe((mut) => {
-            if (!mut.events || mut.type === 'patch function' || Array.isArray(mut.events)) return;
-            if (opts.ignore?.includes(mut.events.key)) return;
+            if (!mut.events || mut.type === 'patch object') return;
+            if (!Array.isArray(mut.events) && opts.ignore?.includes(mut.events.key))
+                return;
             renderFractal();
         })
     ]

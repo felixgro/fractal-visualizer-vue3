@@ -164,7 +164,6 @@ div.modal {
 }
 
 .dimensions {
-	display: flex;
 	padding-right: calc(var(--state-border-radius) * 1.8);
 }
 

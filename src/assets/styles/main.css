@@ -1,12 +1,12 @@
 @import './reset';
 @import './variables';
-@import './slider';
 @import './transitions';
 
 #app {
 	font-family: Avenir, Helvetica, Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	font-size: 12pt;
 	padding: 20px;
 }
 
@@ -24,10 +24,10 @@ small {
 	display: block;
 }
 
+/* Utility classes */
 .hide-scrollbar {
 	scrollbar-width: none;
 }
-
 .hide-scrollbar::-webkit-scrollbar {
 	display: none;
 }

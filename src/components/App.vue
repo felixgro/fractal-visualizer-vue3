@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import MainHeader from '@/components/MainHeader.vue';
 import FractalRenderer from '@/components/FractalRenderer.vue';
+import GlobalKeyBinding from './GlobalKeyBinding.vue';
 import { useStyleStore } from '@/stores/style';
 import { watch } from 'vue';
 
@@ -15,8 +16,16 @@ watch(
 <template>
 	<MainHeader />
 	<FractalRenderer />
+
+	<footer>
+		<GlobalKeyBinding />
+	</footer>
 </template>
 
 <style>
 @import '@/assets/styles/main.css';
+footer {
+	position: fixed;
+	bottom: 0;
+}
 </style>
