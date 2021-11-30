@@ -3,31 +3,30 @@ import * as Algorithms from '@/core/algorithms';
 import { throwIf } from '@/utils/error';
 import Pen from '@/libs/Pen';
 
-self.onmessage = ({ data }: MessageEvent<FRCTL.ExportMessage>) => {
+self.onmessage = async ({ data }: MessageEvent<FRCTL.ExportMessage>) => {
     try {
-        const offscreenCanvas = new OffscreenCanvas(data.export.width, data.export.height);
-        const algorithm = Object.entries(Algorithms).find(([name]) => {
+        const fractalAlgorithm = Object.entries(Algorithms).find(([name]) => {
             return name.toLowerCase() === data.fractal.toLowerCase();
         });
+        throwIf(!fractalAlgorithm || !fractalAlgorithm[1], `Cannot find algorithm for '${data.fractal}'`);
 
-        throwIf(!algorithm, `Cannot find algorithm for '${data.fractal}'`);
-
+        const offscreenCanvas = new OffscreenCanvas(data.export.width, data.export.height);
         const pen = Pen.fromStyles(offscreenCanvas, data.styles);
 
-        algorithm![1].call({}, pen, data.state as any);
+        fractalAlgorithm![1](pen, data.state as any);
 
-        offscreenCanvas.convertToBlob({
+        const blob = await offscreenCanvas.convertToBlob({
             type: data.export.format,
             quality: 1
-        }).then((blob) => {
-            const saveMessage: FRCTL.SaveMessage = {
-                blob,
-                error: null,
-            }
+        })
 
-            self.postMessage(saveMessage);
-            console.log('worker idling');
-        });
+        const saveMessage: FRCTL.SaveMessage = {
+            blob,
+            error: null,
+        }
+
+        self.postMessage(saveMessage);
+        console.log('worker idling');
     } catch (error) {
         // TODO: Better error handling
         // native error handlers doesn't work when using async/await in the worker thread
