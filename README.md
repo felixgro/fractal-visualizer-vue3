@@ -1,4 +1,4 @@
-# Vue 3 + Typescript + Vite
+# fractal-visualizer-vue3
 
 ## Recommended IDE Setup
 
